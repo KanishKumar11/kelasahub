@@ -43,10 +43,10 @@ export function QuoteRotator() {
   return (
     <div className="mt-8 grid gap-10 lg:grid-cols-[1fr_18rem] lg:items-end" onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)}>
       <figure key={i} className="animate-rise">
-        <span aria-hidden className="block font-serif text-[8rem] leading-[0.6] text-sun">
+        <span aria-hidden className="block h-12 font-serif text-[8rem] leading-[0.85] text-sun">
           “
         </span>
-        <blockquote className="mt-4 font-serif text-[2rem] leading-[1.15] tracking-[-0.01em] text-ink sm:text-5xl lg:text-[3.4rem]">
+        <blockquote className="mt-2 font-serif text-[2rem] leading-[1.15] tracking-[-0.01em] text-ink sm:text-5xl lg:text-[3.4rem]">
           {r.quote}
         </blockquote>
         <figcaption className="mt-8 text-sm font-semibold uppercase tracking-[0.16em] text-muted">

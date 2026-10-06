@@ -189,7 +189,7 @@ function Chatbot({ jobs }: { jobs: PublicJob[] }) {
           if (next && msgs.length === 0) menu();
         }}
         aria-label={open ? "Close chat" : "Chat with KelasaHub"}
-        className="relative grid size-14 place-items-center rounded-full bg-ink text-white shadow-xl transition hover:scale-105"
+        className="relative grid size-14 place-items-center rounded-full border-2 border-white bg-ink text-white shadow-[0_8px_24px_-6px_rgba(11,31,58,0.6)] ring-2 ring-ink transition hover:scale-105"
       >
         {open ? <X className="size-6" /> : <Bot className="size-6" />}
         {!open && <span className="absolute right-0.5 top-0.5 size-3 rounded-full border-2 border-white bg-sun" />}

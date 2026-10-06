@@ -97,7 +97,7 @@ export function Business({ partners = [] }: { partners?: string[] }) {
             </div>
           </div>
 
-          <div className="rounded-3xl border border-white/10 bg-white/[0.05] p-6 backdrop-blur sm:p-8">
+          <div className="self-start rounded-3xl border border-white/10 bg-white/[0.05] p-6 backdrop-blur sm:p-8">
             {done ? (
               <div className="flex h-full animate-pop flex-col items-center justify-center py-10 text-center">
                 <span className="grid size-16 place-items-center rounded-full bg-teal">

@@ -5,8 +5,8 @@ import "./globals.css";
 
 const inter = Inter({ variable: "--font-inter", subsets: ["latin"] });
 const bricolage = Bricolage_Grotesque({ variable: "--font-bricolage", subsets: ["latin"] });
-const serif = Instrument_Serif({ variable: "--font-serif", subsets: ["latin"], weight: "400", style: ["normal", "italic"] });
-const kannada = Noto_Sans_Kannada({ variable: "--font-kannada", subsets: ["kannada"], weight: ["700", "800"] });
+const serif = Instrument_Serif({ variable: "--font-serif-src", subsets: ["latin"], weight: "400", style: ["normal", "italic"] });
+const kannada = Noto_Sans_Kannada({ variable: "--font-kannada-src", subsets: ["kannada"], weight: ["700", "800"] });
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE.url),

@@ -29,7 +29,7 @@ export function Nav() {
       <nav
         className={`mx-auto flex max-w-7xl items-center justify-between rounded-2xl px-3 py-2.5 transition-all duration-300 sm:px-4 ${
           scrolled || open
-            ? "border-2 border-ink bg-paper/85 shadow-[0_10px_30px_-14px_rgba(11,31,58,0.35)] backdrop-blur-xl"
+            ? "border-2 border-ink bg-paper/95 shadow-[0_10px_30px_-14px_rgba(11,31,58,0.35)] backdrop-blur-xl"
             : "border-2 border-transparent"
         }`}
       >

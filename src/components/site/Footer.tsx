@@ -29,7 +29,7 @@ export function Footer() {
       <div className="relative border-b-2 border-white/10">
         <span
           aria-hidden
-          className="text-outline pointer-events-none absolute -right-[3vw] top-1/2 -translate-y-1/2 select-none font-kannada text-[22vw] font-extrabold leading-none text-white/[0.06]"
+          className="text-outline pointer-events-none absolute -right-[3vw] top-1/2 -translate-y-1/2 select-none font-kannada text-[22vw] font-extrabold leading-none text-white/15"
         >
           ಕೆಲಸ
         </span>
@@ -106,7 +106,7 @@ export function Footer() {
       </div>
       <p
         aria-hidden
-        className="mx-auto mt-14 max-w-7xl select-none px-4 text-center font-display text-[19vw] font-bold leading-[0.8] tracking-tighter text-white/[0.06] sm:px-6 lg:text-[15rem]"
+        className="mx-auto mt-14 max-w-7xl select-none px-4 text-center font-display text-[16.5vw] font-bold leading-[0.8] tracking-tighter text-white/[0.06] sm:px-6 lg:text-[15rem]"
       >
         KelasaHub
       </p>

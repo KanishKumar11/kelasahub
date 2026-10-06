@@ -199,7 +199,7 @@ export function Languages() {
               <div
                 className={`group flex h-full min-h-40 flex-col justify-between rounded-[2rem] border-2 border-ink p-6 transition duration-300 hover:-translate-y-1 hover:rotate-[-1.5deg] hover:shadow-[8px_8px_0_var(--color-ink)] ${h.tone}`}
               >
-                <p className={`font-bold leading-none tracking-tight ${h.cls} ${i === 0 ? "text-6xl sm:text-7xl lg:text-8xl" : "text-3xl sm:text-4xl"}`}>
+                <p className={`font-bold leading-none tracking-tight ${h.cls} ${i === 0 ? "text-6xl sm:text-7xl lg:text-8xl" : "text-[1.55rem] sm:text-4xl"}`}>
                   {h.word}
                 </p>
                 <p className="mt-6 flex items-center justify-between text-sm font-bold uppercase tracking-wider opacity-80">
@@ -209,6 +209,14 @@ export function Languages() {
               </div>
             </Reveal>
           ))}
+          <Reveal delay={HELLOS.length * 60} className="col-span-2">
+            <div className="flex h-full min-h-40 flex-col justify-between rounded-[2rem] border-2 border-dashed border-ink/40 p-6">
+              <p className="font-display text-2xl font-bold leading-tight tracking-tight sm:text-3xl">
+                + English, Urdu, Bengali, Odia… <span className="accent text-teal-deep">every one counts.</span>
+              </p>
+              <p className="mt-4 text-sm text-muted">Tick all your languages when you apply — we match you to roles that need them.</p>
+            </div>
+          </Reveal>
         </div>
       </div>
     </section>

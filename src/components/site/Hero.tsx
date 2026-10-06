@@ -16,17 +16,11 @@ export function Hero({ jobs, stats }: Props) {
   const ticker = jobs.length ? jobs : [{ title: "Telecallers", salary: "Up to ₹18,000/month", salaryMax: 18000 }];
   return (
     <section id="home" className="relative overflow-hidden pt-28 sm:pt-32">
-      {/* Backdrop: dotted grid, colour fields and the giant ಕೆಲಸ ("work") wordmark */}
+      {/* Backdrop: dotted grid and soft colour fields */}
       <div className="pointer-events-none absolute inset-0 -z-10">
         <div className="bg-dots absolute inset-0 [mask-image:radial-gradient(ellipse_at_25%_30%,#000_15%,transparent_65%)]" />
         <div className="absolute -right-40 top-0 size-[40rem] rounded-full bg-teal/20 blur-[120px]" />
         <div className="absolute -left-40 bottom-10 size-[30rem] rounded-full bg-sun/30 blur-[120px]" />
-        <span
-          aria-hidden
-          className="text-outline absolute -bottom-[6vw] right-[-4vw] select-none font-kannada text-[34vw] font-extrabold leading-none text-ink/[0.07] lg:text-[26vw]"
-        >
-          ಕೆಲಸ
-        </span>
       </div>
 
       <div className="mx-auto grid max-w-7xl items-center gap-12 px-4 pb-16 sm:px-6 lg:grid-cols-[1.15fr_0.85fr] lg:gap-6 lg:pb-24">
@@ -95,10 +89,10 @@ export function Hero({ jobs, stats }: Props) {
         <div className="relative mx-auto flex w-full max-w-[26rem] justify-center py-6 animate-rise [animation-delay:150ms]">
           <span className="sticker absolute -left-2 top-10 z-20 -rotate-[8deg] bg-sun text-ink sm:-left-8">₹0 fees, ever ✦</span>
           <span className="sticker absolute -right-2 top-36 z-20 rotate-[7deg] bg-teal text-white sm:-right-6">Freshers welcome</span>
-          <span className="sticker absolute -left-4 bottom-24 z-20 -rotate-[4deg] bg-white font-kannada text-ink sm:-left-12">
+          <span className="sticker absolute -left-4 bottom-24 z-20 hidden -rotate-[4deg] bg-white font-kannada text-ink sm:-left-12 sm:inline-flex">
             ಕನ್ನಡ · हिंदी · தமிழ்
           </span>
-          <span className="sticker absolute -right-1 bottom-8 z-20 rotate-[-6deg] bg-ink text-white sm:-right-4">
+          <span className="sticker absolute -right-1 bottom-8 z-20 hidden rotate-[-6deg] bg-ink text-white sm:-right-4 sm:inline-flex">
             <Sparkles className="size-3.5 text-sun" /> Day shifts
           </span>
           <PhoneCall />
