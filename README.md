@@ -1,36 +1,45 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# KelasaHub — website + admin panel
 
-## Getting Started
+Next.js 16 (App Router) · MongoDB (Mongoose) · Tailwind CSS 4 · react-pdf
 
-First, run the development server:
+- **Public site** – `/` landing page, `/jobs/[slug]` job pages (with Google for Jobs structured data), `/status` candidate tracker.
+- **Admin panel** – `/admin` dashboard, candidates pipeline, jobs, partners, business leads and team.
+- **PDFs** – per-candidate application forms (branded with the partner's name, like the Nex-Gen form) and landscape shortlists for partners.
+- **Excel** – export uses the same columns and dropdowns as the old *KelasaHub - Applications.xlsx*; import accepts that file too.
+
+## Setup
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+cp .env.example .env.local        # then fill in MONGODB_URI, AUTH_SECRET, ADMIN_*
+npm install
+npm run seed                      # partners, current job openings, first admin user
+npm run import:xlsx -- "../KelasaHub - Applications.xlsx"   # optional: bring over the existing sheet
+npm run dev                       # http://localhost:3000  ·  admin at /admin
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+No MongoDB installed? `npm run db:dev` starts a local one at `mongodb://127.0.0.1:27027/kelasahub` (data kept in `.devdb/`).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+For production use a free **MongoDB Atlas** cluster and set `MONGODB_URI` to its connection string.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Deploying
 
-## Learn More
+Works on Vercel or Netlify (set the base directory to `web/`). Required environment variables:
 
-To learn more about Next.js, take a look at the following resources:
+| Variable | Purpose |
+| --- | --- |
+| `MONGODB_URI` | Database connection string |
+| `AUTH_SECRET` | 32+ random characters for signing admin sessions |
+| `ADMIN_EMAIL`, `ADMIN_PASSWORD` | First admin login (created by `npm run seed`, or on first sign-in to an empty database) |
+| `NEXT_PUBLIC_SITE_URL` | `https://kelasahub.in` |
+| `SMTP_*` (optional) | Enables “Send selection email”; without it the button opens your mail app |
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Where things live
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+| Path | What |
+| --- | --- |
+| `src/lib/constants.ts` | Contact details, office/map link, every dropdown list |
+| `src/lib/models.ts` | Candidate, Job, Partner, Lead, User schemas |
+| `src/app/(site)` | Public pages · `src/components/site` for sections |
+| `src/app/admin` | Admin pages and server actions (`actions.ts`) |
+| `src/lib/pdf` | PDF templates |
+| `src/lib/sheet.ts` | Excel import/export column mapping |
