@@ -14,10 +14,16 @@ export type StatusResult = {
   stage: { step: number; label: string };
 };
 
-/** Candidate-facing status lookup — requires both the Candidate ID and the phone used to apply. */
-export async function lookupStatus(candidateId: string, phone: string): Promise<StatusResult | null> {
+/** True when a candidate with this ID has this email on file. */
+export async function candidateEmailMatches(candidateId: string, email: string) {
   await connectDB();
-  const c = await Candidate.findOne({ candidateId, phone })
+  return !!(await Candidate.exists({ candidateId, email }));
+}
+
+/** Candidate-facing status lookup — only called after the email on file has been verified by OTP. */
+export async function lookupStatus(candidateId: string, email: string): Promise<StatusResult | null> {
+  await connectDB();
+  const c = await Candidate.findOne({ candidateId, email })
     .populate<{ partner: { name: string; location: string } | null }>("partner", "name location")
     .lean();
   if (!c) return null;

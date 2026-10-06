@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, ArrowRight, Check, Copy, Loader2, MessageCircle, X } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, Copy, Loader2, MailCheck, MessageCircle, X } from "lucide-react";
 import {
   AREAS,
   EXPERIENCE_LEVELS,
@@ -13,6 +13,7 @@ import {
   whatsappLink,
 } from "@/lib/constants";
 import { Chip, Field, Honeypot, SelectInput, TextInput } from "./ui";
+import { OtpInput } from "./OtpInput";
 
 export type ApplyTarget =
   | { mode: "job"; role: string; jobId?: string; company?: string }
@@ -52,6 +53,19 @@ export function ApplyDialog({ target, onClose }: { target: ApplyTarget; onClose:
     postGraduate: "",
     website: "",
   });
+  // Email verification: `otp` is non-null while the code screen is showing.
+  const [verified, setVerified] = useState<{ email: string; token: string } | null>(null);
+  const [otp, setOtp] = useState<{ sentTo: string; code: string } | null>(null);
+  const [resendAt, setResendAt] = useState(0);
+  const [now, setNow] = useState(() => Date.now());
+  useEffect(() => {
+    if (!otp) return;
+    const t = setInterval(() => setNow(Date.now()), 1000);
+    return () => clearInterval(t);
+  }, [otp]);
+  const email = f.email.trim().toLowerCase();
+  const resendIn = Math.max(0, Math.ceil((resendAt - now) / 1000));
+
   const set = <K extends keyof typeof f>(k: K, v: (typeof f)[K]) => setF((p) => ({ ...p, [k]: v }));
   const toggle = (k: "languages" | "intlLanguages", v: string) =>
     set(k, f[k].includes(v) ? f[k].filter((x) => x !== v) : [...f[k], v]);
@@ -70,18 +84,74 @@ export function ApplyDialog({ target, onClose }: { target: ApplyTarget; onClose:
     if (step === 0) {
       if (f.name.trim().length < 2) return "Please enter your full name.";
       if (!/^(\+?91)?[6-9]\d{9}$/.test(f.phone.replace(/[\s-]/g, ""))) return "Please enter a valid 10-digit mobile number.";
-      if (f.email && !/^\S+@\S+\.\S+$/.test(f.email)) return "That email doesn't look right.";
+      if (!/^\S+@\S+\.\S+$/.test(f.email.trim())) return "Please enter your email — we'll send a code to verify it.";
       if (f.pincode && !/^\d{6}$/.test(f.pincode)) return "Pincode must be 6 digits.";
     }
     return "";
+  }
+
+  async function sendCode() {
+    setBusy(true);
+    setError("");
+    try {
+      const res = await fetch("/api/otp/send", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ purpose: "apply", email }),
+      });
+      const data = await res.json();
+      if (res.ok || (res.status === 429 && data.retryAfter)) {
+        // A cooldown means a code was sent moments ago — show the code screen anyway.
+        setOtp({ sentTo: email, code: "" });
+        setResendAt(Date.now() + (data.retryAfter ?? 45) * 1000);
+        setNow(Date.now());
+        if (!res.ok && otp) setError(data.error);
+        return;
+      }
+      throw new Error(data.error);
+    } catch (e) {
+      setError(e instanceof Error && e.message ? e.message : "Couldn't send the code. Please try again.");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function verifyCode(code = otp?.code ?? "") {
+    if (!otp || code.length !== 6) return setError("Enter the 6-digit code from your email.");
+    setBusy(true);
+    setError("");
+    try {
+      const res = await fetch("/api/otp/verify", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ purpose: "apply", email: otp.sentTo, code }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error);
+      const v = { email: otp.sentTo, token: data.token as string };
+      setVerified(v);
+      setOtp(null);
+      if (steps.length > 1) {
+        setStep(1);
+        setBusy(false);
+      } else await submit(v.token);
+    } catch (e) {
+      setError(e instanceof Error && e.message ? e.message : "Couldn't verify the code.");
+      setOtp((o) => (o ? { ...o, code: "" } : o));
+      setBusy(false);
+    }
   }
 
   async function next() {
     const err = validateStep();
     setError(err);
     if (err) return;
+    if (step === 0 && verified?.email !== email) return sendCode();
     if (step < steps.length - 1) return setStep(step + 1);
+    await submit(verified!.token);
+  }
 
+  async function submit(emailToken: string) {
     setBusy(true);
     try {
       const res = await fetch("/api/apply", {
@@ -93,7 +163,8 @@ export function ApplyDialog({ target, onClose }: { target: ApplyTarget; onClose:
           jobId: isJob ? target.jobId : "",
           name: f.name,
           phone: f.phone,
-          email: f.email,
+          email,
+          emailToken,
           area: f.area,
           pincode: f.pincode,
           nationality: f.nationality,
@@ -111,6 +182,10 @@ export function ApplyDialog({ target, onClose }: { target: ApplyTarget; onClose:
         }),
       });
       const data = await res.json();
+      if (data.needsVerification) {
+        setVerified(null);
+        setStep(0);
+      }
       if (!res.ok) throw new Error(data.error || "Something went wrong");
       setDone({ id: data.candidateId, duplicate: data.duplicate });
     } catch (e) {
@@ -175,7 +250,67 @@ export function ApplyDialog({ target, onClose }: { target: ApplyTarget; onClose:
         {/* Body */}
         <div className="overflow-y-auto px-6 py-6 sm:px-8">
           {done ? (
-            <Success id={done.id} duplicate={done.duplicate} role={f.role} onClose={close} />
+            <Success id={done.id} duplicate={done.duplicate} role={f.role} email={email} onClose={close} />
+          ) : otp ? (
+            <div className="animate-rise text-center">
+              <span className="mx-auto grid size-16 place-items-center rounded-full border-2 border-ink bg-sun shadow-[3px_3px_0_var(--color-ink)]">
+                <MailCheck className="size-7" />
+              </span>
+              <h3 className="mt-5 font-display text-2xl font-bold tracking-tight">Check your email</h3>
+              <p className="mx-auto mt-2 max-w-xs text-[15px] text-muted">
+                We sent a 6-digit code to <span className="font-semibold text-ink">{otp.sentTo}</span>
+              </p>
+              <form
+                className="mx-auto mt-6 max-w-sm space-y-5"
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  verifyCode();
+                }}
+              >
+                <OtpInput
+                  value={otp.code}
+                  onChange={(code) => {
+                    setOtp({ ...otp, code });
+                    setError("");
+                  }}
+                  onComplete={(code) => verifyCode(code)}
+                />
+                {error && (
+                  <p role="alert" className="rounded-xl bg-coral/10 px-4 py-2.5 text-sm font-medium text-[#b9472b]">
+                    {error}
+                  </p>
+                )}
+                <button
+                  disabled={busy || otp.code.length !== 6}
+                  className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-ink px-6 py-3.5 text-sm font-semibold text-white transition hover:bg-ink-2 disabled:opacity-50"
+                >
+                  {busy ? <Loader2 className="size-4 animate-spin" /> : <Check className="size-4" />}
+                  {steps.length > 1 ? "Verify & continue" : "Verify & submit"}
+                </button>
+              </form>
+              <div className="mt-5 flex items-center justify-center gap-4 text-sm">
+                <button
+                  type="button"
+                  disabled={resendIn > 0 || busy}
+                  onClick={sendCode}
+                  className="font-semibold text-teal-deep disabled:font-normal disabled:text-muted"
+                >
+                  {resendIn > 0 ? `Resend code in ${resendIn}s` : "Resend code"}
+                </button>
+                <span className="text-line">|</span>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setOtp(null);
+                    setError("");
+                  }}
+                  className="font-semibold text-muted hover:text-ink"
+                >
+                  Change email
+                </button>
+              </div>
+              <p className="mt-6 text-xs text-muted">Can&apos;t find it? Check your spam or promotions folder.</p>
+            </div>
           ) : (
             <form
               onSubmit={(e) => {
@@ -218,13 +353,14 @@ export function ApplyDialog({ target, onClose }: { target: ApplyTarget; onClose:
                         autoComplete="tel"
                       />
                     </Field>
-                    <Field label="Email" hint="optional">
+                    <Field label="Email" hint={verified?.email === email ? "✓ verified" : "we'll send a code"}>
                       <TextInput
                         type="email"
                         value={f.email}
                         onChange={(e) => set("email", e.target.value)}
                         placeholder="you@email.com"
                         autoComplete="email"
+                        className={verified?.email === email ? "border-teal bg-teal-soft/40" : ""}
                       />
                     </Field>
                   </div>
@@ -382,7 +518,11 @@ export function ApplyDialog({ target, onClose }: { target: ApplyTarget; onClose:
                 >
                   {busy ? (
                     <>
-                      <Loader2 className="size-4 animate-spin" /> Submitting
+                      <Loader2 className="size-4 animate-spin" /> {step === 0 && verified?.email !== email ? "Sending code" : "Submitting"}
+                    </>
+                  ) : step === 0 && verified?.email !== email ? (
+                    <>
+                      Verify email & continue <MailCheck className="size-4" />
                     </>
                   ) : step < steps.length - 1 ? (
                     <>
@@ -404,7 +544,7 @@ export function ApplyDialog({ target, onClose }: { target: ApplyTarget; onClose:
   );
 }
 
-function Success({ id, duplicate, role, onClose }: { id: string; duplicate?: boolean; role: string; onClose: () => void }) {
+function Success({ id, duplicate, role, email, onClose }: { id: string; duplicate?: boolean; role: string; email: string; onClose: () => void }) {
   const [copied, setCopied] = useState(false);
   const msg = `Hi KelasaHub, I applied for ${role} on your website. My Candidate ID is ${id}.`;
   return (
@@ -437,7 +577,7 @@ function Success({ id, duplicate, role, onClose }: { id: string; duplicate?: boo
         </button>
       </div>
       <p className="mx-auto mt-3 max-w-sm text-xs text-muted">
-        Save this ID — use it with your phone number to track your application anytime.
+        Save this ID — use it with your email to track your application anytime. We have also emailed you a confirmation.
       </p>
       <div className="mt-6 flex flex-col gap-2.5 sm:flex-row sm:justify-center">
         <a
@@ -449,7 +589,7 @@ function Success({ id, duplicate, role, onClose }: { id: string; duplicate?: boo
           <MessageCircle className="size-4" /> Send ID on WhatsApp
         </a>
         <Link
-          href={`/status?id=${encodeURIComponent(id)}`}
+          href={`/status?id=${encodeURIComponent(id)}&email=${encodeURIComponent(email)}`}
           onClick={onClose}
           className="inline-flex items-center justify-center rounded-full border border-line bg-white px-5 py-3 text-sm font-semibold transition hover:border-ink/40"
         >

@@ -78,6 +78,11 @@ export default async function CandidatePage(props: PageProps<"/admin/candidates/
               <div className="mt-2 flex flex-wrap gap-1.5">
                 <Badge value={c.source ?? ""} />
                 {c.overallStatus && <Badge value={c.overallStatus} />}
+                {c.emailVerifiedAt && (
+                  <span className="rounded-full bg-teal-soft px-2 py-0.5 text-xs font-semibold text-teal-deep" title={`Verified ${fmtDate(c.emailVerifiedAt, true)}`}>
+                    ✓ Email verified
+                  </span>
+                )}
                 {c.selectionEmailSent && <span className="rounded-full bg-emerald-50 px-2 py-0.5 text-xs font-semibold text-emerald-700">Selection email sent</span>}
                 {ttf != null && <span className="rounded-full bg-slate-100 px-2 py-0.5 text-xs font-semibold text-slate-600">Time to fill: {ttf} days</span>}
               </div>

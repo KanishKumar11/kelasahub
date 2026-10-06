@@ -21,6 +21,13 @@ No MongoDB installed? `npm run db:dev` starts a local one at `mongodb://127.0.0.
 
 For production use a free **MongoDB Atlas** cluster and set `MONGODB_URI` to its connection string.
 
+## Email verification (OTP)
+
+- **Applying** (form, talent pool, chatbot): the candidate's email is verified with a 6-digit code before the application is accepted; the server rejects applications without a valid verification token. After applying they get a confirmation email with their Candidate ID.
+- **Status tracker**: Candidate ID + email → code → status. Wrong ID/email pairs get the same response but no email, so the form can't reveal who applied.
+- Codes are stored hashed, expire after 10 minutes, allow 5 attempts, have a 45-second resend cooldown and a 5-per-hour cap per email.
+- In development without SMTP settings, codes are printed in the terminal running `npm run dev`.
+
 ## Deploying
 
 Works on Vercel or Netlify (set the base directory to `web/`). Required environment variables:
@@ -31,7 +38,7 @@ Works on Vercel or Netlify (set the base directory to `web/`). Required environm
 | `AUTH_SECRET` | 32+ random characters for signing admin sessions |
 | `ADMIN_EMAIL`, `ADMIN_PASSWORD` | First admin login (created by `npm run seed`, or on first sign-in to an empty database) |
 | `NEXT_PUBLIC_SITE_URL` | `https://kelasahub.in` |
-| `SMTP_*` (optional) | Enables “Send selection email”; without it the button opens your mail app |
+| `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`, `SMTP_FROM` | **Required in production.** Email verification codes, application confirmations and selection emails |
 
 ## Where things live
 

@@ -3,6 +3,8 @@ import { connectDB } from "@/lib/db";
 import { Candidate, Job, nextCandidateId } from "@/lib/models";
 import { applySchema, firstError } from "@/lib/validation";
 import { rateLimit } from "@/lib/rate-limit";
+import { verifyEmailToken } from "@/lib/otp";
+import { sendApplicationConfirmation } from "@/lib/mail";
 
 export async function POST(req: Request) {
   if (!rateLimit(req, "apply", 8)) {
@@ -14,6 +16,10 @@ export async function POST(req: Request) {
 
   // Silently accept bot submissions without storing them.
   if (d.website) return NextResponse.json({ candidateId: "K-0000-0000" });
+
+  if (!(await verifyEmailToken(d.emailToken, d.email, "apply"))) {
+    return NextResponse.json({ error: "Please verify your email address again.", needsVerification: true }, { status: 401 });
+  }
 
   await connectDB();
 
@@ -38,6 +44,7 @@ export async function POST(req: Request) {
     name: d.name,
     phone: d.phone,
     email: d.email,
+    emailVerifiedAt: new Date(),
     nationality: d.nationality,
     address: d.address,
     pincode: d.pincode,
@@ -51,8 +58,11 @@ export async function POST(req: Request) {
     shiftPreference: d.shiftPreference,
     targetSalary: d.targetSalary,
     education: d.education,
-    activity: [{ by: "Website", type: "system", text: `Applied via ${d.source} for ${d.role}` }],
+    activity: [{ by: "Website", type: "system", text: `Applied via ${d.source} for ${d.role} · email ${d.email} verified` }],
   });
+
+  // Don't make the candidate wait on SMTP; a failed confirmation is logged, not fatal.
+  void sendApplicationConfirmation({ email: d.email, name: d.name, role: d.role, candidateId });
 
   return NextResponse.json({ candidateId });
 }

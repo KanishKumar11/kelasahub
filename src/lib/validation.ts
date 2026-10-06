@@ -14,7 +14,9 @@ export const applySchema = z.object({
   jobId: z.string().optional().default(""),
   name: z.string().trim().min(2, "Please enter your full name").max(100),
   phone,
-  email: z.union([z.literal(""), z.string().trim().email("Enter a valid email address")]).default(""),
+  email: z.string().trim().toLowerCase().email("Enter a valid email address"),
+  // Proof of email verification from /api/otp/verify.
+  emailToken: z.string({ error: "Please verify your email first" }).min(10, "Please verify your email first"),
   nationality: optionalText(60),
   address: optionalText(300),
   pincode: z.union([z.literal(""), z.string().trim().regex(/^\d{6}$/, "Pincode must be 6 digits")]).default(""),
@@ -53,10 +55,22 @@ export const leadSchema = z.object({
   website: z.string().optional().default(""),
 });
 
-export const statusSchema = z.object({
-  candidateId: z.string().trim().toUpperCase().regex(/^[A-Z]{1,5}-[\d-]{2,14}$/, "Candidate ID looks like K-2026-0123"),
-  phone,
-});
+const email = z.string().trim().toLowerCase().email("Enter a valid email address");
+const candidateId = z
+  .string()
+  .trim()
+  .toUpperCase()
+  .regex(/^[A-Z]{1,5}-[\d-]{2,14}$/, "Candidate ID looks like K-2026-0123");
+
+export const otpSendSchema = z.discriminatedUnion("purpose", [
+  z.object({ purpose: z.literal("apply"), email }),
+  z.object({ purpose: z.literal("status"), email, candidateId }),
+]);
+
+export const otpVerifySchema = z.discriminatedUnion("purpose", [
+  z.object({ purpose: z.literal("apply"), email, code: z.string().trim().regex(/^\d{6}$/, "Enter the 6-digit code") }),
+  z.object({ purpose: z.literal("status"), email, candidateId, code: z.string().trim().regex(/^\d{6}$/, "Enter the 6-digit code") }),
+]);
 
 export function firstError(err: z.ZodError) {
   return err.issues[0]?.message ?? "Invalid input";

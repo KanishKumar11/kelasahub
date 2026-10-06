@@ -113,7 +113,12 @@ export function Footer() {
       <div className="border-t border-white/10">
         <div className="mx-auto flex max-w-7xl flex-col justify-between gap-2 px-4 py-6 text-sm text-white/50 sm:flex-row sm:px-6">
           <span>© {new Date().getFullYear()} KelasaHub. No placement fees, ever.</span>
-          <span>{OFFICE.shortArea}</span>
+          <span>
+            Designed &amp; developed by{" "}
+            <a href="https://zlaark.com" target="_blank" rel="noopener" className="font-semibold text-white/80 underline-offset-4 transition hover:text-sun hover:underline">
+              Zlaark
+            </a>
+          </span>
         </div>
       </div>
     </footer>

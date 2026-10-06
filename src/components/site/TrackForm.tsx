@@ -8,13 +8,13 @@ import { ArrowRight } from "lucide-react";
 export function TrackForm({ compact = false }: { compact?: boolean }) {
   const router = useRouter();
   const [id, setId] = useState("");
-  const [phone, setPhone] = useState("");
+  const [email, setEmail] = useState("");
 
   return (
     <form
       onSubmit={(e) => {
         e.preventDefault();
-        const qs = new URLSearchParams({ id: id.trim().toUpperCase(), phone: phone.trim() });
+        const qs = new URLSearchParams({ id: id.trim().toUpperCase(), email: email.trim() });
         router.push(`/status?${qs}`);
       }}
       className={`grid gap-2.5 rounded-3xl bg-white/15 p-2.5 backdrop-blur ${compact ? "md:grid-cols-[1fr_1fr_auto]" : ""}`}
@@ -28,11 +28,12 @@ export function TrackForm({ compact = false }: { compact?: boolean }) {
         required
       />
       <input
-        value={phone}
-        onChange={(e) => setPhone(e.target.value)}
-        placeholder="Mobile number"
-        aria-label="Mobile number"
-        inputMode="tel"
+        type="email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        placeholder="Email you applied with"
+        aria-label="Email"
+        autoComplete="email"
         className="rounded-2xl bg-white px-4 py-3.5 text-[15px] text-ink outline-none placeholder:text-muted/70 focus:ring-4 focus:ring-sun/40"
         required
       />

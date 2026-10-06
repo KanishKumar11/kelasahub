@@ -20,6 +20,7 @@ const make = {
   User: () => model("User", userSchema),
   Media: () => model("Media", mediaSchema),
   Counter: () => model("Counter", counterSchema),
+  Otp: () => model("Otp", otpSchema),
 };
 function getModel<K extends keyof typeof make>(name: K): ReturnType<(typeof make)[K]> {
   return (models[name] ?? make[name]()) as ReturnType<(typeof make)[K]>;
@@ -83,6 +84,7 @@ const candidateSchema = new Schema(
     name: { type: String, required: true, trim: true },
     phone: { type: String, required: true, trim: true, index: true },
     email: { type: String, default: "", trim: true, lowercase: true },
+    emailVerifiedAt: { type: Date, default: null },
     source: { type: String, default: "Job Application Form" },
     partner: { type: Schema.Types.ObjectId, ref: "Partner", default: null },
     job: { type: Schema.Types.ObjectId, ref: "Job", default: null },
@@ -190,6 +192,20 @@ const mediaSchema = new Schema(
   { timestamps: true },
 );
 export const Media = getModel("Media");
+
+/* -------------------------------- Email OTPs -------------------------------- */
+// One-time codes for email verification. Only a hash of the code is stored;
+// MongoDB's TTL index deletes documents an hour after creation.
+const otpSchema = new Schema({
+  email: { type: String, required: true, lowercase: true, index: true },
+  purpose: { type: String, enum: ["apply", "status"], required: true },
+  codeHash: { type: String, required: true },
+  expiresAt: { type: Date, required: true },
+  attempts: { type: Number, default: 0 },
+  used: { type: Boolean, default: false },
+  createdAt: { type: Date, default: Date.now, expires: 3600 },
+});
+export const Otp = getModel("Otp");
 
 /* --------------------------------- Counters --------------------------------- */
 const counterSchema = new Schema({ _id: String, seq: { type: Number, default: 0 } });

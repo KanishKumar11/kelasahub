@@ -11,7 +11,7 @@ type Msg =
   | { kind: "options"; options: { label: string; run: () => void }[] }
   | { kind: "id"; id: string };
 
-type Ask = null | "name" | "phone" | "email" | "statusId" | "statusPhone";
+type Ask = null | "name" | "phone" | "email" | "applyCode" | "statusId" | "statusEmail" | "statusCode";
 
 export function FloatingActions({ jobs }: { jobs: PublicJob[] }) {
   return (
@@ -99,20 +99,41 @@ function Chatbot({ jobs }: { jobs: PublicJob[] }) {
     options([{ label: "⬅ Back to menu", run: menu }]);
   };
 
+  const post = async (url: string, body: object) => {
+    const res = await fetch(url, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+    const data = await res.json().catch(() => ({}));
+    return { res, data };
+  };
+
+  async function sendCode(d: Record<string, string>, purpose: "apply" | "status") {
+    const email = (purpose === "apply" ? d.email : d.statusEmail).toLowerCase();
+    const { res, data } = await post("/api/otp/send", { purpose, email, ...(purpose === "status" ? { candidateId: d.statusId.toUpperCase() } : {}) });
+    if (!res.ok && !(res.status === 429 && data.retryAfter)) {
+      bot(`Sorry — ${data.error || "couldn't send the code"}.`);
+      options([{ label: "💬 Open WhatsApp", run: human }, { label: "⬅ Back to menu", run: menu }]);
+      return setAsk(null);
+    }
+    bot(
+      purpose === "apply"
+        ? `📩 I've emailed a 6-digit code to ${email}. Type it here to confirm your email.`
+        : `📩 If that ID matches ${email}, a 6-digit code is on its way. Type it here.`,
+    );
+    setAsk(purpose === "apply" ? "applyCode" : "statusCode");
+  }
+
   async function submit() {
     const v = input.trim();
     if (!v || !ask) return;
-    if ((ask === "phone" || ask === "statusPhone") && !/^(\+?91)?[6-9]\d{9}$/.test(v.replace(/[\s-]/g, ""))) {
+    const reject = (msg: string) => {
       user(v);
       setInput("");
-      return bot("That doesn't look like a valid 10-digit mobile number. Could you try again?");
-    }
-    if (ask === "email" && v.toLowerCase() !== "skip" && !/^\S+@\S+\.\S+$/.test(v)) {
-      user(v);
-      setInput("");
-      return bot("That email doesn't look quite right — re-enter it, or type “skip”.");
-    }
-    user(v);
+      bot(msg);
+    };
+    if (ask === "phone" && !/^(\+?91)?[6-9]\d{9}$/.test(v.replace(/[\s-]/g, ""))) return reject("That doesn't look like a valid 10-digit mobile number. Could you try again?");
+    if ((ask === "email" || ask === "statusEmail") && !/^\S+@\S+\.\S+$/.test(v)) return reject("That email doesn't look quite right — could you re-enter it?");
+    if ((ask === "applyCode" || ask === "statusCode") && !/^\d{6}$/.test(v)) return reject("The code is 6 digits — please check your email and try again.");
+
+    user(ask === "applyCode" || ask === "statusCode" ? "••••••" : v);
     setInput("");
     const d = { ...draft, [ask]: v };
     setDraft(d);
@@ -122,57 +143,61 @@ function Chatbot({ jobs }: { jobs: PublicJob[] }) {
       return setAsk("phone");
     }
     if (ask === "phone") {
-      bot("And your email address? (type “skip” if you don't have one)");
+      bot("And your email address? I'll send a quick code to verify it.");
       return setAsk("email");
     }
     if (ask === "statusId") {
-      bot("And the mobile number you applied with?");
-      return setAsk("statusPhone");
+      bot("And the email you applied with?");
+      return setAsk("statusEmail");
     }
     setAsk(null);
 
-    if (ask === "email") {
-      try {
-        const res = await fetch("/api/apply", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            source: "Chatbot",
-            role: d.role,
-            jobId: d.jobId,
-            name: d.name,
-            phone: d.phone,
-            email: d.email?.toLowerCase() === "skip" ? "" : d.email,
-          }),
-        });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error);
-        bot(`🎉 You're in! Your application for ${d.role} has been received.`);
-        setMsgs((m) => [...m, { kind: "id", id: data.candidateId }]);
-        bot("Save this ID — use it to track your status. Our team will call you within 3–5 days.");
-        options([
-          { label: "💬 Send this ID on WhatsApp", run: () => window.open(whatsappLink(`Hi, I applied via the KelasaHub chatbot for ${d.role}. My Candidate ID is ${data.candidateId}.`), "_blank") },
-          { label: "⬅ Back to menu", run: menu },
-        ]);
-      } catch (e) {
-        bot(`Sorry — ${e instanceof Error && e.message ? e.message : "something went wrong"}. You can also apply on WhatsApp.`);
-        options([{ label: "💬 Open WhatsApp", run: human }]);
+    if (ask === "email") return sendCode(d, "apply");
+    if (ask === "statusEmail") return sendCode(d, "status");
+
+    if (ask === "applyCode") {
+      const email = d.email.toLowerCase();
+      const v1 = await post("/api/otp/verify", { purpose: "apply", email, code: v });
+      if (!v1.res.ok) {
+        bot(`${v1.data.error || "That code didn't work."} Type the code again.`);
+        return setAsk("applyCode");
       }
+      const { res, data } = await post("/api/apply", {
+        source: "Chatbot",
+        role: d.role,
+        jobId: d.jobId,
+        name: d.name,
+        phone: d.phone,
+        email,
+        emailToken: v1.data.token,
+      });
+      if (!res.ok) {
+        bot(`Sorry — ${data.error || "something went wrong"}. You can also apply on WhatsApp.`);
+        return options([{ label: "💬 Open WhatsApp", run: human }]);
+      }
+      bot(`✅ Email verified. 🎉 You're in! Your application for ${d.role} has been received.`);
+      setMsgs((m) => [...m, { kind: "id", id: data.candidateId }]);
+      bot("Save this ID — I've emailed it to you too. Our team will call you within 3–5 days.");
+      return options([
+        { label: "💬 Send this ID on WhatsApp", run: () => window.open(whatsappLink(`Hi, I applied via the KelasaHub chatbot for ${d.role}. My Candidate ID is ${data.candidateId}.`), "_blank") },
+        { label: "⬅ Back to menu", run: menu },
+      ]);
     }
 
-    if (ask === "statusPhone") {
-      try {
-        const res = await fetch("/api/status", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ candidateId: d.statusId, phone: d.statusPhone }),
-        });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error);
-        bot(`Hi ${data.firstName}! Your application for ${data.role}:\n\n➡️ ${data.stage.label}`);
-      } catch (e) {
-        bot(e instanceof Error && e.message ? e.message : "Couldn't check right now.");
+    if (ask === "statusCode") {
+      const { res, data } = await post("/api/otp/verify", {
+        purpose: "status",
+        email: d.statusEmail.toLowerCase(),
+        candidateId: d.statusId.toUpperCase(),
+        code: v,
+      });
+      if (!res.ok) {
+        bot(`${data.error || "That code didn't work."} Type the code again.`);
+        return setAsk("statusCode");
       }
+      bot(`Hi ${data.status.firstName}! Your application for ${data.status.role}:
+
+➡️ ${data.status.stage.label}`);
       options([
         { label: "🔁 Check another", run: status },
         { label: "⬅ Back to menu", run: menu },
@@ -251,7 +276,9 @@ function Chatbot({ jobs }: { jobs: PublicJob[] }) {
                 autoFocus
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
-                type={ask === "phone" || ask === "statusPhone" ? "tel" : ask === "email" ? "email" : "text"}
+                type={ask === "phone" ? "tel" : ask === "email" || ask === "statusEmail" ? "email" : "text"}
+                inputMode={ask === "applyCode" || ask === "statusCode" ? "numeric" : undefined}
+                autoComplete={ask === "applyCode" || ask === "statusCode" ? "one-time-code" : undefined}
                 placeholder="Type your reply…"
                 className="flex-1 rounded-full bg-paper px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-teal/30"
               />
