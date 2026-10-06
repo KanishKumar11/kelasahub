@@ -2,6 +2,7 @@ import "server-only";
 import { connectDB } from "./db";
 import { Candidate } from "./models";
 import { publicStage } from "./constants";
+import { applicationPdfPath } from "./pdf/applications";
 
 export type StatusResult = {
   candidateId: string;
@@ -12,6 +13,7 @@ export type StatusResult = {
   interviewDate: string | null;
   joiningDate: string | null;
   stage: { step: number; label: string };
+  pdfUrl: string;
 };
 
 /** True when a candidate with this ID has this email on file. */
@@ -37,5 +39,6 @@ export async function lookupStatus(candidateId: string, email: string): Promise<
     interviewDate: c.interviewStatus === "Scheduled" || c.interviewStatus === "Rescheduled" ? iso(c.interviewDate) : null,
     joiningDate: c.overallStatus === "Selected" ? iso(c.joiningDate) : null,
     stage: publicStage(c),
+    pdfUrl: await applicationPdfPath(String(c._id)),
   };
 }

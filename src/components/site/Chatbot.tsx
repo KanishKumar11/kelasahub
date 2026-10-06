@@ -191,6 +191,7 @@ function Chatbot({ jobs }: { jobs: PublicJob[] }) {
       setMsgs((m) => [...m, { kind: "id", id: data.candidateId }]);
       bot("Save this ID — I've emailed it to you too. Our team will call you within a day.");
       return options([
+        ...(data.pdfUrl ? [{ label: "📄 Download application form", run: () => window.open(data.pdfUrl, "_blank") }] : []),
         { label: "💬 Send this ID on WhatsApp", run: () => window.open(whatsappLink(`Hi, I applied via the KelasaHub chatbot for ${d.role}. My Candidate ID is ${data.candidateId}.`), "_blank") },
         { label: "⬅ Back to menu", run: menu },
       ]);
@@ -211,6 +212,7 @@ function Chatbot({ jobs }: { jobs: PublicJob[] }) {
 
 ➡️ ${data.status.stage.label}`);
       options([
+        { label: "📄 Download application form", run: () => window.open(data.status.pdfUrl, "_blank") },
         { label: "🔁 Check another", run: status },
         { label: "⬅ Back to menu", run: menu },
       ]);

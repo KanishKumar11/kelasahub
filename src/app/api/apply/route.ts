@@ -5,6 +5,7 @@ import { applySchema, firstError } from "@/lib/validation";
 import { rateLimit } from "@/lib/rate-limit";
 import { verifyEmailToken } from "@/lib/otp";
 import { sendApplicationConfirmation } from "@/lib/mail";
+import { applicationPdfPath, applicationPdfUrl } from "@/lib/pdf/applications";
 
 export async function POST(req: Request) {
   if (!rateLimit(req, "apply", 8)) {
@@ -39,12 +40,12 @@ export async function POST(req: Request) {
     recent.emailVerifiedAt = new Date();
     recent.consentAt ??= new Date();
     await recent.save();
-    return NextResponse.json({ candidateId: recent.candidateId, duplicate: true });
+    return NextResponse.json({ candidateId: recent.candidateId, duplicate: true, pdfUrl: await applicationPdfPath(String(recent._id)) });
   }
 
   const job = d.jobId && /^[a-f0-9]{24}$/.test(d.jobId) ? await Job.findById(d.jobId).lean() : null;
   const candidateId = await nextCandidateId();
-  await Candidate.create({
+  const created = await Candidate.create({
     candidateId,
     source: d.source,
     role: d.role,
@@ -72,7 +73,8 @@ export async function POST(req: Request) {
   });
 
   // Don't make the candidate wait on SMTP; a failed confirmation is logged, not fatal.
-  void sendApplicationConfirmation({ email: d.email, name: d.name, role: d.role, candidateId });
+  const id = String(created._id);
+  void sendApplicationConfirmation({ email: d.email, name: d.name, role: d.role, candidateId, pdfUrl: await applicationPdfUrl(id) });
 
-  return NextResponse.json({ candidateId });
+  return NextResponse.json({ candidateId, pdfUrl: await applicationPdfPath(id) });
 }

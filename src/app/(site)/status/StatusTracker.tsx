@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { ArrowRight, Check, Loader2, MailCheck, XCircle } from "lucide-react";
+import { ArrowRight, Check, FileDown, Loader2, MailCheck, XCircle } from "lucide-react";
 import { whatsappLink } from "@/lib/constants";
 import { WhatsAppIcon } from "@/components/site/BrandIcons";
 import { OtpInput } from "@/components/site/OtpInput";
@@ -232,7 +232,14 @@ export function StatusTracker({ initialId, initialEmail }: { initialId: string; 
                 )}
               </div>
             )}
-            <div className="mt-7 flex flex-wrap items-center gap-4">
+            <div className="mt-7 flex flex-wrap items-center gap-3">
+              <a
+                href={result.pdfUrl}
+                download
+                className="btn-pop inline-flex items-center gap-2 rounded-full border-2 border-ink bg-sun px-5 py-3 text-sm font-bold text-ink"
+              >
+                <FileDown className="size-4" /> Application form (PDF)
+              </a>
               <a
                 href={whatsappLink(`Hi KelasaHub, I'd like an update on my application ${result.candidateId}.`)}
                 target="_blank"

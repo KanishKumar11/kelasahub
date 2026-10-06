@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, ArrowRight, Check, Copy, Loader2, MailCheck, MessageCircle, X } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, Copy, FileDown, Loader2, MailCheck, MessageCircle, X } from "lucide-react";
 import {
   AREAS,
   EXPERIENCE_LEVELS,
@@ -29,7 +29,7 @@ export function ApplyDialog({ target, onClose }: { target: ApplyTarget; onClose:
   const [step, setStep] = useState(0);
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
-  const [done, setDone] = useState<{ id: string; duplicate?: boolean } | null>(null);
+  const [done, setDone] = useState<{ id: string; duplicate?: boolean; pdfUrl?: string } | null>(null);
   const [f, setF] = useState({
     role: isJob ? target.role : TALENT_POOL_ROLES[0],
     name: "",
@@ -190,7 +190,7 @@ export function ApplyDialog({ target, onClose }: { target: ApplyTarget; onClose:
         setStep(0);
       }
       if (!res.ok) throw new Error(data.error || "Something went wrong");
-      setDone({ id: data.candidateId, duplicate: data.duplicate });
+      setDone({ id: data.candidateId, duplicate: data.duplicate, pdfUrl: data.pdfUrl });
     } catch (e) {
       setError(e instanceof Error ? e.message : "Something went wrong. Please try WhatsApp instead.");
     } finally {
@@ -253,7 +253,7 @@ export function ApplyDialog({ target, onClose }: { target: ApplyTarget; onClose:
         {/* Body */}
         <div className="overflow-y-auto px-6 py-6 sm:px-8">
           {done ? (
-            <Success id={done.id} duplicate={done.duplicate} role={f.role} email={email} onClose={close} />
+            <Success id={done.id} duplicate={done.duplicate} pdfUrl={done.pdfUrl} role={f.role} email={email} onClose={close} />
           ) : otp ? (
             <div className="animate-rise text-center">
               <span className="mx-auto grid size-16 place-items-center rounded-full border-2 border-ink bg-sun shadow-[3px_3px_0_var(--color-ink)]">
@@ -566,7 +566,21 @@ export function ApplyDialog({ target, onClose }: { target: ApplyTarget; onClose:
   );
 }
 
-function Success({ id, duplicate, role, email, onClose }: { id: string; duplicate?: boolean; role: string; email: string; onClose: () => void }) {
+function Success({
+  id,
+  duplicate,
+  pdfUrl,
+  role,
+  email,
+  onClose,
+}: {
+  id: string;
+  duplicate?: boolean;
+  pdfUrl?: string;
+  role: string;
+  email: string;
+  onClose: () => void;
+}) {
   const [copied, setCopied] = useState(false);
   const msg = `Hi KelasaHub, I applied for ${role} on your website. My Candidate ID is ${id}.`;
   return (
@@ -601,7 +615,16 @@ function Success({ id, duplicate, role, email, onClose }: { id: string; duplicat
       <p className="mx-auto mt-3 max-w-sm text-xs text-muted">
         Save this ID — use it with your email to track your application anytime. We have also emailed you a confirmation.
       </p>
-      <div className="mt-6 flex flex-col gap-2.5 sm:flex-row sm:justify-center">
+      {pdfUrl && (
+        <a
+          href={pdfUrl}
+          download
+          className="btn-pop mx-auto mt-6 flex w-full max-w-sm items-center justify-center gap-2 rounded-full border-2 border-ink bg-sun px-5 py-3.5 text-sm font-bold text-ink"
+        >
+          <FileDown className="size-4" /> Download application form (PDF)
+        </a>
+      )}
+      <div className="mt-3 flex flex-col gap-2.5 sm:flex-row sm:justify-center">
         <a
           href={whatsappLink(msg)}
           target="_blank"

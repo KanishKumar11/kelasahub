@@ -7,6 +7,7 @@ const nextConfig: NextConfig = {
   // PDF routes read fonts + logo from disk; make sure serverless bundles include them.
   outputFileTracingIncludes: {
     "/api/admin/pdf/*": ["./assets/**"],
+    "/api/application-pdf": ["./assets/**"],
   },
   experimental: {
     // The dev cache grows to hundreds of MB; this machine's drive is nearly full.

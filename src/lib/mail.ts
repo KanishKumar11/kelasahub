@@ -112,7 +112,7 @@ export async function sendOtpEmail(to: string, code: string, purpose: "apply" | 
 }
 
 /** Confirmation after applying, so the candidate keeps their Candidate ID. Best-effort. */
-export async function sendApplicationConfirmation(c: { email: string; name: string; role: string; candidateId: string }) {
+export async function sendApplicationConfirmation(c: { email: string; name: string; role: string; candidateId: string; pdfUrl?: string }) {
   const first = c.name.split(" ")[0];
   const subject = `Application received — ${c.role} (${c.candidateId})`;
   const track = `${SITE.url}/status?id=${encodeURIComponent(c.candidateId)}&email=${encodeURIComponent(c.email)}`;
@@ -124,6 +124,7 @@ export async function sendApplicationConfirmation(c: { email: string; name: stri
     "",
     "Our team will call you within a day for a short screening.",
     `Track your application anytime: ${track}`,
+    ...(c.pdfUrl ? [`Download your application form (PDF, link valid 30 days): ${c.pdfUrl}`] : []),
     "",
     "KelasaHub never charges candidates. If anyone asks you for money in our name, please report it to us.",
     "",
@@ -142,6 +143,7 @@ export async function sendApplicationConfirmation(c: { email: string; name: stri
         </div>
         <p style="margin:0 0 20px;font-size:15px;line-height:1.5">Our team will call you within <b>a day</b> for a short screening.</p>
         <a href="${track}" style="display:inline-block;background:#f6b93b;color:#0b1f3a;border:2px solid #0b1f3a;border-radius:999px;padding:12px 22px;font-weight:700;text-decoration:none">Track my application</a>
+        ${c.pdfUrl ? `<a href="${c.pdfUrl}" style="display:inline-block;margin-left:8px;background:#ffffff;color:#0b1f3a;border:2px solid #0b1f3a;border-radius:999px;padding:12px 22px;font-weight:700;text-decoration:none">Download application PDF</a>` : ""}
         <p style="margin:24px 0 0;padding:12px 14px;background:#fdf0d3;border-radius:12px;font-size:13px;line-height:1.5">KelasaHub never charges candidates. If anyone asks you for money in our name, please report it to us.</p>
       </td></tr>
       <tr><td style="padding:16px 28px;border-top:1px solid #e5e0d5;font-size:12px;color:#5b6b7f">${SITE.phoneDisplay} · ${SITE.email}</td></tr>
