@@ -196,3 +196,74 @@ details > summary::-webkit-details-marker {
 .spotlight {
   background-image: radial-gradient(420px circle at var(--mx, 50%) var(--my, 50%), rgba(20, 163, 154, 0.12), transparent 60%);
 }
+
+/* Readable long-form text for policy pages */
+.legal h2 {
+  font-family: var(--font-display);
+  font-size: 1.75rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  margin-bottom: 1rem;
+}
+.legal h3 {
+  font-weight: 700;
+  font-size: 1.05rem;
+  margin: 1.5rem 0 0.5rem;
+}
+.legal p,
+.legal li {
+  font-size: 1.0625rem;
+  line-height: 1.75;
+  color: color-mix(in oklab, var(--color-ink) 82%, transparent);
+}
+.legal p + p {
+  margin-top: 0.9rem;
+}
+.legal ul {
+  margin: 0.75rem 0;
+  padding-left: 1.25rem;
+  list-style: disc;
+}
+.legal ul li::marker {
+  color: var(--color-teal);
+}
+.legal li + li {
+  margin-top: 0.35rem;
+}
+.legal a {
+  color: var(--color-teal-deep);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.legal strong {
+  color: var(--color-ink);
+}
+.legal .callout {
+  margin-top: 1.25rem;
+  border: 2px solid var(--color-ink);
+  border-radius: 1.25rem;
+  background: var(--color-sun-soft);
+  padding: 1rem 1.25rem;
+  box-shadow: 4px 4px 0 var(--color-ink);
+}
+.legal table {
+  width: 100%;
+  margin-top: 1rem;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+.legal th,
+.legal td {
+  border-bottom: 1px solid var(--color-line);
+  padding: 0.6rem 0.5rem;
+  text-align: left;
+  vertical-align: top;
+}
+.legal th {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-muted);
+}

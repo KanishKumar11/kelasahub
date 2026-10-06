@@ -129,6 +129,13 @@ export function Business({ partners = [] }: { partners?: string[] }) {
                   ))}
                 </select>
                 {error && <p className="rounded-xl bg-coral/20 px-4 py-2.5 text-sm text-white">{error}</p>}
+                <p className="text-xs text-white/50">
+                  By submitting you agree to our{" "}
+                  <a href="/privacy" className="underline hover:text-white">
+                    Privacy Policy
+                  </a>
+                  .
+                </p>
                 <button
                   disabled={busy}
                   className="group inline-flex w-full items-center justify-center gap-2 rounded-xl border-2 border-ink bg-sun px-6 py-3.5 text-[15px] font-bold text-ink shadow-[4px_4px_0_#000] transition hover:-translate-y-0.5 disabled:opacity-60"

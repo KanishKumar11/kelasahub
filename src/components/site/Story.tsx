@@ -1,4 +1,6 @@
+import Link from "next/link";
 import { BadgeCheck, CalendarCheck, Check, Sparkles } from "lucide-react";
+import { HIRING_STATS } from "@/lib/constants";
 import { Reveal } from "./Reveal";
 import { TrackForm } from "./TrackForm";
 import { Manifesto } from "./Manifesto";
@@ -161,7 +163,7 @@ export function OurPromise() {
           <span className="sticker -rotate-2 bg-sun">₹0 registration</span>
           <span className="sticker rotate-1 bg-white">₹0 processing</span>
           <span className="sticker -rotate-1 bg-teal text-white">₹0 after you join</span>
-          <span className="sticker rotate-2 bg-ink text-white">Report anyone who asks</span>
+          <Link href="/zero-fee-policy" className="sticker rotate-2 bg-ink text-white transition hover:-translate-y-0.5">Report anyone who asks →</Link>
         </div>
       </div>
     </section>
@@ -193,24 +195,24 @@ export function Languages() {
             the job, or a much bigger salary.
           </p>
         </Reveal>
-        <div className="mt-14 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+        <div className="mt-14 grid grid-cols-1 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4">
           {HELLOS.map((h, i) => (
-            <Reveal key={h.lang} delay={i * 60} className={i === 0 ? "col-span-2 row-span-2 sm:col-span-1 lg:col-span-2" : ""}>
+            <Reveal key={h.lang} delay={i * 60} className={i === 0 ? "sm:row-span-2 lg:col-span-2" : ""}>
               <div
-                className={`group flex h-full min-h-40 flex-col justify-between rounded-[2rem] border-2 border-ink p-6 transition duration-300 hover:-translate-y-1 hover:rotate-[-1.5deg] hover:shadow-[8px_8px_0_var(--color-ink)] ${h.tone}`}
+                className={`group flex h-full min-w-0 flex-col justify-between gap-4 overflow-hidden rounded-[1.75rem] border-2 border-ink p-5 transition sm:min-h-40 sm:rounded-[2rem] sm:p-6 duration-300 hover:-translate-y-1 hover:rotate-[-1.5deg] hover:shadow-[8px_8px_0_var(--color-ink)] ${h.tone}`}
               >
-                <p className={`font-bold leading-none tracking-tight ${h.cls} ${i === 0 ? "text-6xl sm:text-7xl lg:text-8xl" : "text-[1.55rem] sm:text-4xl"}`}>
+                <p className={`font-bold leading-none tracking-tight ${h.cls} ${i === 0 ? "text-[clamp(2.75rem,14vw,6rem)] sm:text-7xl lg:text-8xl" : "text-[clamp(1.6rem,8vw,2.25rem)] sm:text-[clamp(1.5rem,2.6vw,2.25rem)]"}`}>
                   {h.word}
                 </p>
-                <p className="mt-6 flex items-center justify-between text-sm font-bold uppercase tracking-wider opacity-80">
+                <p className="flex items-center justify-between text-xs font-bold uppercase tracking-wider opacity-80 sm:mt-2 sm:text-sm">
                   {h.lang}
                   <Sparkles className="size-4 opacity-0 transition group-hover:opacity-100" />
                 </p>
               </div>
             </Reveal>
           ))}
-          <Reveal delay={HELLOS.length * 60} className="col-span-2">
-            <div className="flex h-full min-h-40 flex-col justify-between rounded-[2rem] border-2 border-dashed border-ink/40 p-6">
+          <Reveal delay={HELLOS.length * 60} className="sm:col-span-2">
+            <div className="flex h-full flex-col justify-between gap-3 rounded-[1.75rem] border-2 border-dashed border-ink/40 p-5 sm:min-h-40 sm:rounded-[2rem] sm:p-6">
               <p className="font-display text-2xl font-bold leading-tight tracking-tight sm:text-3xl">
                 + English, Urdu, Bengali, Odia… <span className="accent text-teal-deep">every one counts.</span>
               </p>
@@ -257,6 +259,26 @@ export function Testimonials() {
   return (
     <section id="reviews" className="scroll-mt-20 py-24 sm:py-32">
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
+        {/* Placement proof */}
+        <Reveal className="relative mb-20 overflow-hidden rounded-[2.5rem] border-2 border-ink bg-teal px-6 py-10 text-white shadow-[10px_10px_0_var(--color-ink)] sm:px-12 sm:py-14">
+          <div className="bg-grid-dark absolute inset-0 opacity-60" />
+          <div className="relative grid gap-6 lg:grid-cols-[auto_1fr] lg:items-center lg:gap-12">
+            <p className="font-display text-[7rem] font-bold leading-[0.8] tracking-[-0.06em] text-sun sm:text-[10rem]">
+              {HIRING_STATS.placed}+
+            </p>
+            <div>
+              <p className="font-display text-3xl font-bold leading-[1.05] tracking-tight sm:text-5xl">
+                candidates hired in <span className="accent text-sun">just {HIRING_STATS.placedPeriod}.</span>
+              </p>
+              <p className="mt-4 max-w-xl text-[17px] leading-relaxed text-white/80">
+                Real people, now working at our partner companies across Bangalore — placed for ₹0, with a call back
+                within a day of applying.
+              </p>
+              <span className="sticker mt-6 -rotate-2 bg-white text-ink">You could be next ✦</span>
+            </div>
+          </div>
+        </Reveal>
+
         <p className="flex items-center gap-2 text-sm font-bold uppercase tracking-[0.2em] text-teal-deep">
           <span className="h-px w-8 bg-teal-deep" /> From candidates
         </p>

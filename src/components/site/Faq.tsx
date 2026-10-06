@@ -8,7 +8,7 @@ export const FAQS = [
   },
   {
     q: "How fast will I actually hear back?",
-    a: "Most candidates get an acknowledgment within 24 hours and a first screening call within 3–5 days. You can track every stage with your Candidate ID.",
+    a: "We call you back within a day of applying for a quick screening. You can track every stage with your Candidate ID."
   },
   {
     q: "What happens if I don't get selected?",

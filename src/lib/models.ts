@@ -85,6 +85,8 @@ const candidateSchema = new Schema(
     phone: { type: String, required: true, trim: true, index: true },
     email: { type: String, default: "", trim: true, lowercase: true },
     emailVerifiedAt: { type: Date, default: null },
+    // When the candidate agreed to the Privacy Policy / sharing with hiring partners.
+    consentAt: { type: Date, default: null },
     source: { type: String, default: "Job Application Form" },
     partner: { type: Schema.Types.ObjectId, ref: "Partner", default: null },
     job: { type: Schema.Types.ObjectId, ref: "Job", default: null },

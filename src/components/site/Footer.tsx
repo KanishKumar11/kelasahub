@@ -22,6 +22,14 @@ export function Footer() {
         { label: "Directions", href: OFFICE.mapLink },
       ],
     },
+    {
+      title: "Legal",
+      links: [
+        { label: "Privacy Policy", href: "/privacy" },
+        { label: "Terms of Use", href: "/terms" },
+        { label: "Zero-Fee Policy", href: "/zero-fee-policy" },
+      ],
+    },
   ];
   return (
     <footer className="relative overflow-hidden bg-ink text-white">
@@ -57,7 +65,7 @@ export function Footer() {
       </div>
 
       <div className="mx-auto max-w-7xl px-4 pt-16 sm:px-6">
-        <div className="grid gap-12 lg:grid-cols-[1.4fr_1fr_1fr_1.3fr]">
+        <div className="grid gap-12 sm:grid-cols-2 lg:grid-cols-[1.3fr_1fr_1fr_1fr_1.3fr]">
           <div>
             <Logo light />
             <p className="mt-4 max-w-xs text-[15px] leading-relaxed text-white/60">

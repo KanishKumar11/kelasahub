@@ -4,16 +4,15 @@ import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, Phone, PhoneOff, Sparkles } from "lucide-react";
-import { whatsappLink } from "@/lib/constants";
+import { HIRING_STATS, whatsappLink } from "@/lib/constants";
 import { WhatsAppIcon } from "./BrandIcons";
 
 type Props = {
-  jobs: { title: string; salary: string; salaryMax: number | null }[];
+  partners: string[];
   stats: { value: string; label: string }[];
 };
 
-export function Hero({ jobs, stats }: Props) {
-  const ticker = jobs.length ? jobs : [{ title: "Telecallers", salary: "Up to ₹18,000/month", salaryMax: 18000 }];
+export function Hero({ partners, stats }: Props) {
   return (
     <section id="home" className="relative overflow-hidden pt-28 sm:pt-32">
       {/* Backdrop: dotted grid and soft colour fields */}
@@ -32,7 +31,7 @@ export function Hero({ jobs, stats }: Props) {
               <span className="relative inline-flex size-2.5 rounded-full bg-teal" />
             </span>
             <span>
-              <b className="text-ink">{jobs.length} roles</b> hiring now · Bangalore
+              <b className="text-ink">{HIRING_STATS.openPositions} roles</b> hiring now · Bangalore
             </span>
           </div>
 
@@ -52,7 +51,7 @@ export function Hero({ jobs, stats }: Props) {
 
           <p className="mt-7 max-w-lg text-lg leading-relaxed text-muted sm:text-xl">
             Verified call-centre &amp; BPO jobs across Bangalore. We screen you once, match you to roles near home and
-            call you back in days — <span className="font-semibold text-ink">free for candidates, always.</span>
+            call you back within a day — <span className="font-semibold text-ink">free for candidates, always.</span>
           </p>
 
           <div className="mt-9 flex flex-col gap-3.5 sm:flex-row">
@@ -92,29 +91,33 @@ export function Hero({ jobs, stats }: Props) {
           <span className="sticker absolute -left-4 bottom-24 z-20 hidden -rotate-[4deg] bg-white font-kannada text-ink sm:-left-12 sm:inline-flex">
             ಕನ್ನಡ · हिंदी · தமிழ்
           </span>
-          <span className="sticker absolute -right-1 bottom-8 z-20 hidden rotate-[-6deg] bg-ink text-white sm:-right-4 sm:inline-flex">
-            <Sparkles className="size-3.5 text-sun" /> Day shifts
+          <span className="sticker absolute -right-1 bottom-8 z-20 hidden rotate-[-6deg] bg-ink text-white sm:-right-6 sm:inline-flex">
+            <Sparkles className="size-3.5 text-sun" /> {HIRING_STATS.placed}+ hired in {HIRING_STATS.placedPeriod}
           </span>
           <PhoneCall />
         </div>
       </div>
 
-      {/* Role ticker */}
-      <div className="relative border-y-2 border-ink bg-ink py-4 text-white">
-        <div className="mask-fade-x overflow-hidden">
-          <div className="flex w-max animate-marquee-slow gap-10 hover:[animation-play-state:paused]">
-            {[...ticker, ...ticker, ...ticker, ...ticker].map((j, i) => (
-              <Link key={i} href="#openings" className="flex items-center gap-3 whitespace-nowrap font-display text-lg font-semibold sm:text-xl">
-                <span className="text-sun">✦</span>
-                {j.title}
-                <span className="rounded-full bg-white/10 px-2.5 py-0.5 text-sm font-medium text-teal-soft">
-                  {j.salaryMax ? `₹${Math.round(j.salaryMax / 1000)}K/mo` : j.salary}
-                </span>
-              </Link>
-            ))}
+      {/* Hiring partners strip */}
+      {partners.length > 0 && (
+        <div className="relative flex items-stretch border-y-2 border-ink bg-ink text-white">
+          <p className="relative z-10 hidden shrink-0 items-center gap-2 border-r-2 border-white/10 bg-ink px-6 text-xs font-bold uppercase tracking-[0.18em] text-sun sm:flex">
+            Our hiring partners
+          </p>
+          <div className="mask-fade-x min-w-0 flex-1 overflow-hidden py-4">
+            <div className="flex w-max animate-marquee-slow gap-10 hover:[animation-play-state:paused]">
+              {Array.from({ length: 4 }, () => partners)
+                .flat()
+                .map((name, i) => (
+                  <span key={i} className="flex items-center gap-3 whitespace-nowrap font-display text-lg font-semibold sm:text-xl">
+                    <span className="text-sun">✦</span>
+                    {name}
+                  </span>
+                ))}
+            </div>
           </div>
         </div>
-      </div>
+      )}
     </section>
   );
 }

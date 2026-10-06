@@ -15,7 +15,7 @@ type Ask = null | "name" | "phone" | "email" | "applyCode" | "statusId" | "statu
 
 export function FloatingActions({ jobs }: { jobs: PublicJob[] }) {
   return (
-    <div className="fixed bottom-5 right-4 z-40 flex flex-col items-end gap-3 sm:right-6">
+    <div className="fixed bottom-3 right-3 z-40 flex flex-col items-end gap-2 sm:bottom-5 sm:right-6 sm:gap-3">
       <a
         href={SITE.instagram}
         target="_blank"
@@ -31,7 +31,7 @@ export function FloatingActions({ jobs }: { jobs: PublicJob[] }) {
         target="_blank"
         rel="noopener noreferrer"
         aria-label="Chat with us on WhatsApp"
-        className="grid size-12 place-items-center rounded-full bg-[#25D366] text-white shadow-lg transition hover:scale-105"
+        className="grid size-11 place-items-center rounded-full bg-[#25D366] text-white shadow-lg transition hover:scale-105 sm:size-12"
       >
         <WhatsAppIcon className="size-6" />
       </a>
@@ -78,8 +78,19 @@ function Chatbot({ jobs }: { jobs: PublicJob[] }) {
   };
   const startApply = (j: PublicJob) => {
     setDraft({ role: j.title, jobId: j.id });
-    bot(`Great choice! Let's get you applied for ${j.title}. What's your full name?`);
-    setAsk("name");
+    bot(
+      `Great choice! Before we start: by applying you agree to our Privacy Policy (kelasahub.in/privacy) and Terms, and to us sharing your profile with hiring partners for suitable jobs.`,
+    );
+    options([
+      {
+        label: "✅ I agree — let's apply",
+        run: () => {
+          bot(`Let's get you applied for ${j.title}. What's your full name?`);
+          setAsk("name");
+        },
+      },
+      { label: "⬅ Back to menu", run: menu },
+    ]);
   };
   const status = () => {
     setDraft({});
@@ -170,6 +181,7 @@ function Chatbot({ jobs }: { jobs: PublicJob[] }) {
         phone: d.phone,
         email,
         emailToken: v1.data.token,
+        consent: true,
       });
       if (!res.ok) {
         bot(`Sorry — ${data.error || "something went wrong"}. You can also apply on WhatsApp.`);
@@ -177,7 +189,7 @@ function Chatbot({ jobs }: { jobs: PublicJob[] }) {
       }
       bot(`✅ Email verified. 🎉 You're in! Your application for ${d.role} has been received.`);
       setMsgs((m) => [...m, { kind: "id", id: data.candidateId }]);
-      bot("Save this ID — I've emailed it to you too. Our team will call you within 3–5 days.");
+      bot("Save this ID — I've emailed it to you too. Our team will call you within a day.");
       return options([
         { label: "💬 Send this ID on WhatsApp", run: () => window.open(whatsappLink(`Hi, I applied via the KelasaHub chatbot for ${d.role}. My Candidate ID is ${data.candidateId}.`), "_blank") },
         { label: "⬅ Back to menu", run: menu },
@@ -214,7 +226,7 @@ function Chatbot({ jobs }: { jobs: PublicJob[] }) {
           if (next && msgs.length === 0) menu();
         }}
         aria-label={open ? "Close chat" : "Chat with KelasaHub"}
-        className="relative grid size-14 place-items-center rounded-full border-2 border-white bg-ink text-white shadow-[0_8px_24px_-6px_rgba(11,31,58,0.6)] ring-2 ring-ink transition hover:scale-105"
+        className="relative grid size-12 place-items-center rounded-full border-2 border-white bg-ink sm:size-14 text-white shadow-[0_8px_24px_-6px_rgba(11,31,58,0.6)] ring-2 ring-ink transition hover:scale-105"
       >
         {open ? <X className="size-6" /> : <Bot className="size-6" />}
         {!open && <span className="absolute right-0.5 top-0.5 size-3 rounded-full border-2 border-white bg-sun" />}

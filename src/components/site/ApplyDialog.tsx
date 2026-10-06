@@ -52,6 +52,7 @@ export function ApplyDialog({ target, onClose }: { target: ApplyTarget; onClose:
     graduate: "",
     postGraduate: "",
     website: "",
+    consent: false,
   });
   // Email verification: `otp` is non-null while the code screen is showing.
   const [verified, setVerified] = useState<{ email: string; token: string } | null>(null);
@@ -86,6 +87,7 @@ export function ApplyDialog({ target, onClose }: { target: ApplyTarget; onClose:
       if (!/^(\+?91)?[6-9]\d{9}$/.test(f.phone.replace(/[\s-]/g, ""))) return "Please enter a valid 10-digit mobile number.";
       if (!/^\S+@\S+\.\S+$/.test(f.email.trim())) return "Please enter your email — we'll send a code to verify it.";
       if (f.pincode && !/^\d{6}$/.test(f.pincode)) return "Pincode must be 6 digits.";
+      if (!f.consent) return "Please agree to the Privacy Policy and Terms to continue.";
     }
     return "";
   }
@@ -165,6 +167,7 @@ export function ApplyDialog({ target, onClose }: { target: ApplyTarget; onClose:
           phone: f.phone,
           email,
           emailToken,
+          consent: f.consent,
           area: f.area,
           pincode: f.pincode,
           nationality: f.nationality,
@@ -393,6 +396,25 @@ export function ApplyDialog({ target, onClose }: { target: ApplyTarget; onClose:
                       </Field>
                     )}
                   </div>
+                  <label className="flex cursor-pointer items-start gap-3 rounded-2xl border-2 border-ink/10 bg-white p-3.5 text-[13px] leading-relaxed text-ink/80 transition has-[:checked]:border-teal has-[:checked]:bg-teal-soft/40">
+                    <input
+                      type="checkbox"
+                      checked={f.consent}
+                      onChange={(e) => set("consent", e.target.checked)}
+                      className="mt-0.5 size-4 shrink-0 accent-teal"
+                    />
+                    <span>
+                      I agree to KelasaHub&apos;s{" "}
+                      <Link href="/privacy" target="_blank" className="font-semibold text-teal-deep underline">
+                        Privacy Policy
+                      </Link>{" "}
+                      and{" "}
+                      <Link href="/terms" target="_blank" className="font-semibold text-teal-deep underline">
+                        Terms
+                      </Link>
+                      , and to my profile being shared with hiring partners for suitable jobs.
+                    </span>
+                  </label>
                 </div>
               )}
 
@@ -555,7 +577,7 @@ function Success({ id, duplicate, role, email, onClose }: { id: string; duplicat
       <p className="mx-auto mt-4 max-w-sm text-[15px] text-muted">
         {duplicate
           ? "You've already applied for this role recently — here's your existing Candidate ID."
-          : `Thanks for applying for ${role}. Our team will call you within 3–5 days for a quick screening.`}
+          : `Thanks for applying for ${role}. Our team will call you within a day for a quick screening.`}
       </p>
       <div className="mx-auto mt-6 flex max-w-sm items-center justify-between rounded-2xl border-2 border-dashed border-teal/40 bg-white px-5 py-4">
         <div className="text-left">

@@ -10,7 +10,7 @@ const TEXT: { t: string; hi?: boolean }[] = [
   { t: " We screen your profile once, match you to roles " },
   { t: "near home,", hi: true },
   { t: " call you back " },
-  { t: "in days,", hi: true },
+  { t: "within a day,", hi: true },
   { t: " not weeks — and we still check in " },
   { t: "a month after you join.", hi: true },
 ];

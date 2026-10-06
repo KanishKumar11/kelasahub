@@ -43,6 +43,18 @@ export function candidateWhatsApp(phone: string, text?: string) {
   return `https://wa.me/${digits}${text ? `?text=${encodeURIComponent(text)}` : ""}`;
 }
 
+/** Headline numbers shown on the website. Update these as hiring changes. */
+export const HIRING_STATS = {
+  openPositions: 240,
+  payMin: 15_000,
+  payMax: 75_000,
+  partners: 6,
+  callback: "within a day",
+  // Candidates appointed at partner companies, and over what period.
+  placed: 100,
+  placedPeriod: "2 months",
+};
+
 export const SCREENING_STATUS = ["New", "In Review", "Shortlisted", "Rejected"] as const;
 export const INTERVIEW_STATUS = [
   "Not Scheduled",

@@ -16,6 +16,7 @@ export const applySchema = z.object({
   phone,
   email: z.string().trim().toLowerCase().email("Enter a valid email address"),
   // Proof of email verification from /api/otp/verify.
+  consent: z.literal(true, { error: "Please agree to the Privacy Policy to continue" }),
   emailToken: z.string({ error: "Please verify your email first" }).min(10, "Please verify your email first"),
   nationality: optionalText(60),
   address: optionalText(300),

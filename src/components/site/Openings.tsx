@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, ArrowUpRight, Clock, ImageIcon, Search, X } from "lucide-react";
 import type { PublicJob } from "@/lib/queries";
-import { PROCESSES, SHIFT_TIMINGS } from "@/lib/constants";
+import { HIRING_STATS, PROCESSES, SHIFT_TIMINGS } from "@/lib/constants";
 import { useApply } from "./ApplyProvider";
 import { Reveal } from "./Reveal";
 
@@ -42,7 +42,7 @@ export function Openings({ jobs }: { jobs: PublicJob[] }) {
         <Reveal className="flex flex-col justify-between gap-8 lg:flex-row lg:items-end">
           <div>
             <p className="flex items-center gap-2 text-sm font-bold uppercase tracking-[0.2em] text-teal-deep">
-              <span className="h-px w-8 bg-teal-deep" /> Open roles · {jobs.length}
+              <span className="h-px w-8 bg-teal-deep" /> {HIRING_STATS.openPositions} openings · {jobs.length} job types
             </p>
             <h2 className="mt-4 font-display text-5xl font-bold leading-[0.95] tracking-[-0.04em] sm:text-7xl">
               Pick your <span className="accent text-teal-deep">seat.</span>

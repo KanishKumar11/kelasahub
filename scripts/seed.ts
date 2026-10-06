@@ -11,11 +11,11 @@ import { Job, Partner, User } from "../src/lib/models";
 
 const PARTNERS = [
   { name: "Nex-Gen", location: "HBR Layout, Bangalore" },
-  { name: "Assureqai.com", location: "Bangalore" },
+  { name: "Expert Callers", location: "Bangalore" },
   { name: "Sowtech", location: "Bangalore" },
-  { name: "Washohub", location: "Bangalore" },
-  { name: "Thefreelancers31", location: "Bangalore" },
-  { name: "SwatVR", location: "Bangalore" },
+  { name: "Washohub.in", location: "Bangalore" },
+  { name: "Zlaark", location: "Bangalore" },
+  { name: "JoAji Innovation", location: "Bangalore" },
 ];
 
 const JOBS = [

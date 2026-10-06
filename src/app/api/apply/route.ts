@@ -28,8 +28,17 @@ export async function POST(req: Request) {
     phone: d.phone,
     role: d.role,
     dateApplied: { $gte: new Date(Date.now() - 3 * 86_400_000) },
-  }).lean();
+  });
   if (recent) {
+    // They just verified this email, so make it the one on file — otherwise the
+    // status tracker (which emails a code to the address on file) wouldn't work for them.
+    if (recent.email !== d.email) {
+      recent.activity.push({ by: "Website", type: "system", text: `Re-applied; email changed ${recent.email || "—"} → ${d.email} (verified)` });
+      recent.email = d.email;
+    }
+    recent.emailVerifiedAt = new Date();
+    recent.consentAt ??= new Date();
+    await recent.save();
     return NextResponse.json({ candidateId: recent.candidateId, duplicate: true });
   }
 
@@ -45,6 +54,7 @@ export async function POST(req: Request) {
     phone: d.phone,
     email: d.email,
     emailVerifiedAt: new Date(),
+    consentAt: new Date(),
     nationality: d.nationality,
     address: d.address,
     pincode: d.pincode,

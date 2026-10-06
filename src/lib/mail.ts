@@ -122,7 +122,7 @@ export async function sendApplicationConfirmation(c: { email: string; name: stri
     `Thanks for applying for ${c.role} through KelasaHub.`,
     `Your Candidate ID is ${c.candidateId} — keep it handy.`,
     "",
-    "Our team will call you within 3–5 days for a short screening.",
+    "Our team will call you within a day for a short screening.",
     `Track your application anytime: ${track}`,
     "",
     "KelasaHub never charges candidates. If anyone asks you for money in our name, please report it to us.",
@@ -140,7 +140,7 @@ export async function sendApplicationConfirmation(c: { email: string; name: stri
           <p style="margin:0;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#5b6b7f">Candidate ID</p>
           <p style="margin:4px 0 0;font-size:26px;font-weight:800;letter-spacing:1px">${c.candidateId}</p>
         </div>
-        <p style="margin:0 0 20px;font-size:15px;line-height:1.5">Our team will call you within <b>3–5 days</b> for a short screening.</p>
+        <p style="margin:0 0 20px;font-size:15px;line-height:1.5">Our team will call you within <b>a day</b> for a short screening.</p>
         <a href="${track}" style="display:inline-block;background:#f6b93b;color:#0b1f3a;border:2px solid #0b1f3a;border-radius:999px;padding:12px 22px;font-weight:700;text-decoration:none">Track my application</a>
         <p style="margin:24px 0 0;padding:12px 14px;background:#fdf0d3;border-radius:12px;font-size:13px;line-height:1.5">KelasaHub never charges candidates. If anyone asks you for money in our name, please report it to us.</p>
       </td></tr>
