@@ -5,7 +5,7 @@ import { notFound } from "next/navigation";
 import { ArrowLeft, Building2, Check, Clock, IndianRupee, MapPin } from "lucide-react";
 import { getActiveJobs, getJobBySlug } from "@/lib/queries";
 import { jobPostingLd } from "@/lib/jsonld";
-import { SHIFT_TIMINGS, whatsappLink } from "@/lib/constants";
+import { SHIFT_TIMINGS, SITE, whatsappLink } from "@/lib/constants";
 import { JsonLd } from "@/components/site/JsonLd";
 import { ApplyButton } from "@/components/site/ApplyButton";
 import { WhatsAppIcon } from "@/components/site/BrandIcons";
@@ -19,6 +19,7 @@ export async function generateMetadata(props: PageProps<"/jobs/[slug]">): Promis
   return {
     title: `${job.title} — ${job.salary}`,
     description: `${job.description} ${job.requirements}`.slice(0, 160),
+    alternates: { canonical: `/jobs/${job.slug}` },
     openGraph: job.image ? { images: [job.image] } : undefined,
   };
 }
@@ -35,10 +36,21 @@ export default async function JobPage(props: PageProps<"/jobs/[slug]">) {
   return (
     <>
       <JsonLd data={jobPostingLd(job)} />
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          itemListElement: [
+            { "@type": "ListItem", position: 1, name: "Home", item: SITE.url },
+            { "@type": "ListItem", position: 2, name: "Jobs", item: `${SITE.url}/jobs` },
+            { "@type": "ListItem", position: 3, name: job.title, item: `${SITE.url}/jobs/${job.slug}` },
+          ],
+        }}
+      />
       <section className="relative overflow-hidden pb-20 pt-28 sm:pt-36">
         <div className="pointer-events-none absolute -right-32 -top-24 -z-10 size-[30rem] rounded-full bg-teal/20 blur-[110px]" />
         <div className="mx-auto max-w-6xl px-4 sm:px-6">
-          <Link href="/#openings" className="inline-flex items-center gap-1.5 text-sm font-semibold text-muted transition hover:text-ink">
+          <Link href="/jobs" className="inline-flex items-center gap-1.5 text-sm font-semibold text-muted transition hover:text-ink">
             <ArrowLeft className="size-4" /> All openings
           </Link>
 

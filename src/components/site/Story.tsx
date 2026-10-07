@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { BadgeCheck, CalendarCheck, Check, Sparkles } from "lucide-react";
+import { ArrowRight, BadgeCheck, CalendarCheck, Check, Sparkles } from "lucide-react";
 import { HIRING_STATS } from "@/lib/constants";
 import { Reveal } from "./Reveal";
 import { TrackForm } from "./TrackForm";
@@ -284,6 +284,49 @@ export function Testimonials() {
         </p>
         <QuoteRotator />
       </div>
+    </section>
+  );
+}
+
+/* ------------------------------ Employer band ----------------------------- */
+// Home-page pointer to /employers (the full enquiry form lives there).
+
+export function EmployerBand({ partners = [] }: { partners?: string[] }) {
+  return (
+    <section className="px-4 py-10 sm:px-6">
+      <Reveal className="relative mx-auto max-w-7xl overflow-hidden rounded-[2.5rem] border-2 border-ink bg-ink text-white shadow-[10px_10px_0_var(--color-teal)]">
+        <div className="bg-grid-dark absolute inset-0 opacity-50" />
+        <div className="absolute -right-32 bottom-0 size-[26rem] rounded-full bg-teal/25 blur-[100px]" />
+        <div className="relative grid gap-10 p-7 sm:p-12 lg:grid-cols-[1.2fr_1fr] lg:items-end lg:p-16">
+          <div>
+            <p className="text-sm font-semibold uppercase tracking-[0.18em] text-sun">For employers</p>
+            <h2 className="mt-3 font-display text-5xl font-bold leading-[0.95] tracking-[-0.04em] sm:text-6xl">
+              Need manpower? We&apos;ll <span className="accent text-sun">fill the floor.</span>
+            </h2>
+            <p className="mt-5 max-w-md text-[17px] leading-relaxed text-white/70">
+              Pre-screened, language- and shift-matched candidates for BPO, sales and back-office teams — shortlists in days, not weeks.
+            </p>
+            <Link
+              href="/employers"
+              className="btn-pop mt-8 inline-flex items-center gap-2 rounded-full border-2 border-ink bg-sun px-6 py-3.5 text-sm font-bold text-ink"
+            >
+              Hire with KelasaHub <ArrowRight className="size-4" />
+            </Link>
+          </div>
+          {partners.length > 0 && (
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-white/45">Trusted by</p>
+              <div className="mt-3 flex flex-wrap gap-2">
+                {partners.map((p) => (
+                  <span key={p} className="rounded-full border border-white/20 bg-white/[0.06] px-4 py-2 text-sm font-semibold">
+                    {p}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      </Reveal>
     </section>
   );
 }

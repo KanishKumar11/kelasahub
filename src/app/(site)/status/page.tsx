@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { StatusTracker } from "./StatusTracker";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/status" },
   title: "Track your application",
   description: "Check the status of your KelasaHub job application with your Candidate ID.",
 };

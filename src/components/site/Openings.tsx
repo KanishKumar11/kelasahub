@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useRef, useState } from "react";
+import { type ReactNode, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, ArrowUpRight, Clock, ImageIcon, Search, X } from "lucide-react";
@@ -15,7 +15,8 @@ const FILTERS = [
   { key: "senior", label: "₹30K+ / month" },
 ] as const;
 
-export function Openings({ jobs }: { jobs: PublicJob[] }) {
+/** `limit` trims the list (home page teaser); `intro` replaces the default heading block (e.g. with the /jobs page h1). */
+export function Openings({ jobs, limit, intro }: { jobs: PublicJob[]; limit?: number; intro?: ReactNode }) {
   const { openApply, openTalentPool } = useApply();
   const [filter, setFilter] = useState<(typeof FILTERS)[number]["key"]>("all");
   const [q, setQ] = useState("");
@@ -37,9 +38,10 @@ export function Openings({ jobs }: { jobs: PublicJob[] }) {
     openApply({ mode: "job", role: job.title, jobId: job.id, company: job.company ? `${job.company} · ${job.location}` : job.location });
 
   return (
-    <section id="openings" className="relative scroll-mt-20 py-24 sm:py-32">
+    <section id="openings" className={`relative scroll-mt-20 ${intro ? "pb-14 sm:pb-20" : "py-24 sm:py-32"}`}>
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <Reveal className="flex flex-col justify-between gap-8 lg:flex-row lg:items-end">
+          {intro ?? (
           <div>
             <p className="flex items-center gap-2 text-sm font-bold uppercase tracking-[0.2em] text-teal-deep">
               <span className="h-px w-8 bg-teal-deep" /> {HIRING_STATS.openPositions} openings · {jobs.length} job types
@@ -49,6 +51,7 @@ export function Openings({ jobs }: { jobs: PublicJob[] }) {
             </h2>
             <p className="mt-4 max-w-md text-lg text-muted">Every role is verified, salaried and hiring this month. Tap one to apply in two minutes.</p>
           </div>
+          )}
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
             <div className="flex gap-1 overflow-x-auto rounded-full border-2 border-ink bg-white p-1 no-scrollbar">
               {FILTERS.map((f) => (
@@ -84,9 +87,18 @@ export function Openings({ jobs }: { jobs: PublicJob[] }) {
           }}
           onMouseLeave={() => setHover(null)}
         >
-          {shown.map((job, idx) => (
+          {(limit ? shown.slice(0, limit) : shown).map((job, idx) => (
             <JobRow key={job.id} job={job} index={idx} onApply={() => apply(job)} onPoster={() => setPoster(job)} onHover={setHover} />
           ))}
+          {limit && shown.length > limit && (
+            <Link
+              href="/jobs"
+              className="group flex items-center justify-between gap-4 border-t-2 border-ink px-1 py-6 font-display text-xl font-bold tracking-tight transition hover:bg-sun sm:px-3 sm:text-2xl"
+            >
+              See all {shown.length} openings
+              <ArrowRight className="size-6 transition group-hover:translate-x-1" />
+            </Link>
+          )}
           {shown.length === 0 && <p className="border-t-2 border-ink py-12 text-center text-muted">No roles match that filter — try “All roles”.</p>}
 
           {/* Poster that follows the cursor (desktop only) */}

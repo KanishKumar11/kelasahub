@@ -3,15 +3,17 @@ import { OFFICE, SITE, whatsappLink } from "@/lib/constants";
 import { Reveal } from "./Reveal";
 import { WhatsAppIcon } from "./BrandIcons";
 
-export function Visit() {
+/** `intro={false}` drops the heading when the page already has its own (the /contact h1). */
+export function Visit({ intro = true }: { intro?: boolean }) {
   const rows = [
     { icon: MapPin, label: "Address", value: OFFICE.address, href: OFFICE.mapLink, ext: true },
     { icon: Phone, label: "Call us", value: SITE.phoneDisplay, href: `tel:${SITE.phoneTel}` },
     { icon: Mail, label: "Email", value: SITE.email, href: `mailto:${SITE.email}` },
   ];
   return (
-    <section id="visit" className="scroll-mt-20 py-20 sm:py-28">
+    <section id="visit" className={`scroll-mt-20 ${intro ? "py-20 sm:py-28" : "pb-20 sm:pb-28"}`}>
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
+        {intro && (
         <Reveal className="max-w-2xl">
           <p className="flex items-center gap-2 text-sm font-bold uppercase tracking-[0.2em] text-teal-deep"><span className="h-px w-8 bg-teal-deep" /> Visit us</p>
           <h2 className="mt-3 font-display text-5xl font-bold leading-[0.95] tracking-[-0.04em] sm:text-7xl">
@@ -19,8 +21,9 @@ export function Visit() {
           </h2>
           <p className="mt-4 text-lg text-muted">Free to join, zero rupees to pay. Walk in, call or WhatsApp — whichever is easiest.</p>
         </Reveal>
+        )}
 
-        <Reveal delay={80} className="relative mt-12 grid overflow-hidden rounded-[2.5rem] border-2 border-ink bg-white shadow-[10px_10px_0_var(--color-ink)] lg:grid-cols-[0.9fr_1.1fr]">
+        <Reveal delay={80} className={`relative grid ${intro ? "mt-12" : ""} overflow-hidden rounded-[2.5rem] border-2 border-ink bg-white shadow-[10px_10px_0_var(--color-ink)] lg:grid-cols-[0.9fr_1.1fr]`}>
           <div className="flex flex-col p-7 sm:p-10">
             <div className="flex items-center gap-3">
               <span className="grid size-12 place-items-center rounded-2xl bg-teal text-white">

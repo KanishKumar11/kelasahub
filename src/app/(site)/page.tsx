@@ -1,15 +1,17 @@
+import type { Metadata } from "next";
 import { Hero } from "@/components/site/Hero";
 import { Openings } from "@/components/site/Openings";
-import { HowItWorks, Languages, OurPromise, Testimonials, TrackBand } from "@/components/site/Story";
+import { EmployerBand, HowItWorks, Languages, OurPromise, Testimonials, TrackBand } from "@/components/site/Story";
 import { Faq } from "@/components/site/Faq";
-import { Business } from "@/components/site/Business";
 import { Visit } from "@/components/site/Visit";
 import { JsonLd } from "@/components/site/JsonLd";
 import { getActiveJobs, getSitePartners } from "@/lib/queries";
-import { jobPostingLd, organizationLd } from "@/lib/jsonld";
+import { organizationLd } from "@/lib/jsonld";
 import { HIRING_STATS } from "@/lib/constants";
 
 export const dynamic = "force-dynamic";
+
+export const metadata: Metadata = { alternates: { canonical: "/" } };
 
 export default async function HomePage() {
   const [jobs, partners] = await Promise.all([getActiveJobs(), getSitePartners()]);
@@ -25,18 +27,15 @@ export default async function HomePage() {
   return (
     <>
       <JsonLd data={organizationLd()} />
-      {jobs.map((j) => (
-        <JsonLd key={j.id} data={jobPostingLd(j)} />
-      ))}
       <Hero partners={partners} stats={stats} />
-      <Openings jobs={jobs} />
+      <Openings jobs={jobs} limit={6} />
       <HowItWorks />
       <OurPromise />
       <Languages />
       <Testimonials />
       <TrackBand />
       <Faq />
-      <Business partners={partners} />
+      <EmployerBand partners={partners} />
       <Visit />
     </>
   );

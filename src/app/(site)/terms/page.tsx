@@ -5,6 +5,7 @@ import { OFFICE, SITE } from "@/lib/constants";
 import { POLICY_UPDATED } from "@/lib/policies";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/terms" },
   title: "Terms of Use",
   description: "The terms for using KelasaHub's website and recruitment services.",
 };

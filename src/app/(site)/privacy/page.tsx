@@ -5,6 +5,7 @@ import { OFFICE, SITE } from "@/lib/constants";
 import { POLICY_UPDATED } from "@/lib/policies";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/privacy" },
   title: "Privacy Policy",
   description: "How KelasaHub collects, uses, shares and protects candidate and employer information.",
 };

@@ -8,17 +8,17 @@ export function Footer() {
     {
       title: "Candidates",
       links: [
-        { label: "Current openings", href: "/#openings" },
+        { label: "Current openings", href: "/jobs" },
         { label: "Track application", href: "/status" },
-        { label: "How it works", href: "/#how" },
-        { label: "FAQs", href: "/#faq" },
+        { label: "FAQs", href: "/faq" },
       ],
     },
     {
       title: "Company",
       links: [
-        { label: "Hire manpower", href: "/#business" },
-        { label: "Visit our office", href: "/#visit" },
+        { label: "Hire manpower", href: "/employers" },
+        { label: "About us", href: "/about" },
+        { label: "Contact & office", href: "/contact" },
         { label: "Directions", href: OFFICE.mapLink },
       ],
     },
@@ -49,7 +49,7 @@ export function Footer() {
           </h2>
           <div className="flex flex-col gap-3 sm:flex-row lg:flex-col">
             <Link
-              href="/#openings"
+              href="/jobs"
               className="inline-flex items-center justify-center gap-2 rounded-full border-2 border-sun bg-sun px-7 py-4 text-[15px] font-bold text-ink shadow-[4px_4px_0_var(--color-teal)] transition hover:-translate-y-0.5"
             >
               Browse open roles →

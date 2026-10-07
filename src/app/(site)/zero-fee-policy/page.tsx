@@ -5,6 +5,7 @@ import { OFFICE, SITE, whatsappLink } from "@/lib/constants";
 import { POLICY_UPDATED } from "@/lib/policies";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/zero-fee-policy" },
   title: "Zero-Fee Policy & Fraud Alert",
   description: "KelasaHub never charges candidates. Learn how to spot fake job offers and report anyone asking for money in our name.",
 };

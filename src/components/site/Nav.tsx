@@ -2,20 +2,24 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { ArrowRight, Menu, X } from "lucide-react";
 import { Logo } from "./Logo";
 
 const LINKS = [
-  { label: "Openings", href: "/#openings" },
-  { label: "How it works", href: "/#how" },
-  { label: "For employers", href: "/#business" },
+  { label: "Jobs", href: "/jobs" },
+  { label: "For employers", href: "/employers" },
+  { label: "About", href: "/about" },
+  { label: "FAQs", href: "/faq" },
+  { label: "Contact", href: "/contact" },
   { label: "Track application", href: "/status" },
-  { label: "Visit us", href: "/#visit" },
 ];
 
 export function Nav() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const pathname = usePathname();
+  const active = (href: string) => pathname === href || pathname.startsWith(`${href}/`);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 16);
@@ -41,7 +45,8 @@ export function Nav() {
             <Link
               key={l.href}
               href={l.href}
-              className="rounded-full px-3.5 py-2 text-sm font-medium text-ink/75 transition hover:bg-ink/5 hover:text-ink"
+              aria-current={active(l.href) ? "page" : undefined}
+              className={`rounded-full px-3.5 py-2 text-sm font-medium transition hover:bg-ink/5 hover:text-ink ${active(l.href) ? "bg-ink/5 text-ink" : "text-ink/75"}`}
             >
               {l.label}
             </Link>
@@ -49,7 +54,7 @@ export function Nav() {
         </div>
         <div className="flex items-center gap-2">
           <Link
-            href="/#openings"
+            href="/jobs"
             className="group hidden items-center gap-1.5 rounded-full border-2 border-ink bg-sun px-4 py-2 text-sm font-bold text-ink shadow-[3px_3px_0_var(--color-ink)] transition hover:-translate-y-0.5 hover:shadow-[4px_4px_0_var(--color-ink)] sm:inline-flex"
           >
             Find a job <ArrowRight className="size-4 transition group-hover:translate-x-0.5" />
@@ -71,13 +76,14 @@ export function Nav() {
               key={l.href}
               href={l.href}
               onClick={() => setOpen(false)}
-              className="block rounded-xl px-4 py-3 text-[15px] font-medium text-ink hover:bg-ink/5"
+              aria-current={active(l.href) ? "page" : undefined}
+              className={`block rounded-xl px-4 py-3 text-[15px] font-medium text-ink hover:bg-ink/5 ${active(l.href) ? "bg-ink/5" : ""}`}
             >
               {l.label}
             </Link>
           ))}
           <Link
-            href="/#openings"
+            href="/jobs"
             onClick={() => setOpen(false)}
             className="mt-1 flex items-center justify-center gap-2 rounded-xl bg-ink px-4 py-3 text-[15px] font-semibold text-white"
           >
