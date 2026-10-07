@@ -4,7 +4,7 @@ import { SignJWT, jwtVerify } from "jose";
 import { connectDB } from "./db";
 import { Otp } from "./models";
 
-export type OtpPurpose = "apply" | "status";
+export type OtpPurpose = "apply" | "status" | "login";
 
 const CODE_TTL_MS = 10 * 60_000;
 const RESEND_COOLDOWN_MS = 45_000;

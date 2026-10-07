@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, BadgeCheck, CalendarCheck, Check, Sparkles } from "lucide-react";
+import { ArrowRight, BadgeCheck, CalendarCheck, Check, FileText, Sparkles } from "lucide-react";
 import { HIRING_STATS } from "@/lib/constants";
 import { Reveal } from "./Reveal";
 import { TrackForm } from "./TrackForm";
@@ -325,6 +325,55 @@ export function EmployerBand({ partners = [] }: { partners?: string[] }) {
               </div>
             </div>
           )}
+        </div>
+      </Reveal>
+    </section>
+  );
+}
+
+/* ------------------------------- Resume band ------------------------------ */
+// Promotes the free resume builder (home page, jobs page).
+
+export function ResumeBand() {
+  return (
+    <section className="px-4 py-10 sm:px-6">
+      <Reveal className="relative mx-auto grid max-w-7xl items-center gap-8 overflow-hidden rounded-[2.5rem] border-2 border-ink bg-teal p-7 text-white shadow-[10px_10px_0_var(--color-ink)] sm:p-12 lg:grid-cols-[1.2fr_1fr]">
+        <div className="bg-grid-dark absolute inset-0 opacity-60" />
+        <div className="relative">
+          <span className="sticker -rotate-2 bg-sun text-ink">New · 100% free</span>
+          <h2 className="mt-5 font-display text-4xl font-bold leading-[0.95] tracking-[-0.04em] sm:text-6xl">
+            No resume? <span className="accent text-sun">No problem.</span>
+          </h2>
+          <p className="mt-4 max-w-md text-[17px] leading-relaxed text-white/85">
+            Build a clean, job-ready resume in 10 minutes — with ready-made lines for telecaller, support and sales roles. Download the PDF, no sign-up needed.
+          </p>
+          <div className="mt-7 flex flex-col gap-3 sm:flex-row">
+            <Link href="/resume-builder" className="btn-pop inline-flex items-center justify-center gap-2 rounded-full border-2 border-ink bg-sun px-6 py-3.5 text-sm font-bold text-ink">
+              Build my resume <ArrowRight className="size-4" />
+            </Link>
+            <Link href="/resume-builder/bpo-fresher" className="inline-flex items-center justify-center gap-2 rounded-full border-2 border-white/40 px-6 py-3.5 text-sm font-bold transition hover:bg-white/10">
+              See a fresher example
+            </Link>
+          </div>
+        </div>
+        {/* Paper stack illustration */}
+        <div aria-hidden className="relative mx-auto hidden h-64 w-56 sm:block">
+          <div className="absolute inset-0 rotate-6 rounded-2xl border-2 border-ink bg-sun-soft" />
+          <div className="absolute inset-0 -rotate-3 rounded-2xl border-2 border-ink bg-white p-5 text-ink shadow-[6px_6px_0_var(--color-ink)]">
+            <p className="font-display text-lg font-bold leading-none">Priya Sharma</p>
+            <p className="mt-1 text-[10px] font-semibold text-teal-deep">Telecaller — Inbound & Outbound</p>
+            <div className="mt-3 h-[2px] bg-teal" />
+            {["w-full", "w-11/12", "w-4/5"].map((w) => (
+              <div key={w} className={`mt-2.5 h-1.5 rounded-full bg-paper-2 ${w}`} />
+            ))}
+            <p className="mt-4 text-[9px] font-bold uppercase text-teal-deep">Skills</p>
+            <div className="mt-1.5 flex flex-wrap gap-1">
+              {["Sales", "CRM", "Kannada", "Hindi"].map((t) => (
+                <span key={t} className="rounded border border-line px-1.5 py-0.5 text-[9px]">{t}</span>
+              ))}
+            </div>
+            <FileText className="absolute bottom-4 right-4 size-6 text-teal" />
+          </div>
         </div>
       </Reveal>
     </section>

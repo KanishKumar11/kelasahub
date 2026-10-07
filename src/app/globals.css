@@ -267,3 +267,10 @@ details > summary::-webkit-details-marker {
   letter-spacing: 0.08em;
   color: var(--color-muted);
 }
+
+/* Pages with a fixed mobile action bar (resume builder) lift the floating chat buttons above it. */
+@media (max-width: 1023px) {
+  body:has([data-bottom-bar]) [data-floating-actions] {
+    bottom: 5.25rem;
+  }
+}

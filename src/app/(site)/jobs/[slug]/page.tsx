@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, Building2, Check, Clock, IndianRupee, MapPin } from "lucide-react";
+import { ArrowLeft, ArrowRight, Building2, Check, Clock, IndianRupee, MapPin } from "lucide-react";
 import { getActiveJobs, getJobBySlug } from "@/lib/queries";
 import { jobPostingLd } from "@/lib/jsonld";
 import { SHIFT_TIMINGS, SITE, whatsappLink } from "@/lib/constants";
@@ -121,12 +121,22 @@ export default async function JobPage(props: PageProps<"/jobs/[slug]">) {
               </div>
             </div>
 
-            <aside className="animate-rise [animation-delay:120ms]">
+            <aside className="animate-rise space-y-4 [animation-delay:120ms] lg:sticky lg:top-28 lg:self-start">
               {job.image && (
-                <div className="overflow-hidden rounded-[2rem] border border-line bg-white shadow-[0_30px_60px_-30px_rgba(11,31,58,0.45)] lg:sticky lg:top-28">
+                <div className="overflow-hidden rounded-[2rem] border border-line bg-white shadow-[0_30px_60px_-30px_rgba(11,31,58,0.45)]">
                   <Image src={job.image} alt={`${job.title} hiring poster`} width={900} height={900} className="h-auto w-full" priority />
                 </div>
               )}
+              <Link
+                href="/resume-builder"
+                className="group flex items-center justify-between gap-4 rounded-[1.5rem] border-2 border-ink bg-sun-soft p-5 transition hover:-translate-y-0.5 hover:shadow-[5px_5px_0_var(--color-ink)]"
+              >
+                <span>
+                  <span className="block font-display text-lg font-bold">No resume? Make one free</span>
+                  <span className="text-sm text-muted">10 minutes, ready-made lines for this kind of role</span>
+                </span>
+                <ArrowRight className="size-5 shrink-0 transition group-hover:translate-x-1" />
+              </Link>
             </aside>
           </div>
 

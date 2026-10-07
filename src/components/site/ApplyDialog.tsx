@@ -253,7 +253,7 @@ export function ApplyDialog({ target, onClose }: { target: ApplyTarget; onClose:
         {/* Body */}
         <div className="overflow-y-auto px-6 py-6 sm:px-8">
           {done ? (
-            <Success id={done.id} duplicate={done.duplicate} pdfUrl={done.pdfUrl} role={f.role} email={email} onClose={close} />
+            <Success id={done.id} duplicate={done.duplicate} pdfUrl={done.pdfUrl} role={f.role} onClose={close} />
           ) : otp ? (
             <div className="animate-rise text-center">
               <span className="mx-auto grid size-16 place-items-center rounded-full border-2 border-ink bg-sun shadow-[3px_3px_0_var(--color-ink)]">
@@ -571,14 +571,12 @@ function Success({
   duplicate,
   pdfUrl,
   role,
-  email,
   onClose,
 }: {
   id: string;
   duplicate?: boolean;
   pdfUrl?: string;
   role: string;
-  email: string;
   onClose: () => void;
 }) {
   const [copied, setCopied] = useState(false);
@@ -634,13 +632,19 @@ function Success({
           <MessageCircle className="size-4" /> Send ID on WhatsApp
         </a>
         <Link
-          href={`/status?id=${encodeURIComponent(id)}&email=${encodeURIComponent(email)}`}
+          href="/account"
           onClick={onClose}
           className="inline-flex items-center justify-center rounded-full border border-line bg-white px-5 py-3 text-sm font-semibold transition hover:border-ink/40"
         >
-          Track status
+          My applications
         </Link>
       </div>
+      <p className="mt-5 text-sm text-muted">
+        No resume yet?{" "}
+        <Link href="/resume-builder" onClick={onClose} className="font-semibold text-teal-deep underline-offset-4 hover:underline">
+          Make one free in 10 minutes →
+        </Link>
+      </p>
     </div>
   );
 }

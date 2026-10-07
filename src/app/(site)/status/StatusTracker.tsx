@@ -5,9 +5,10 @@ import { ArrowRight, Check, FileDown, Loader2, MailCheck, XCircle } from "lucide
 import { whatsappLink } from "@/lib/constants";
 import { WhatsAppIcon } from "@/components/site/BrandIcons";
 import { OtpInput } from "@/components/site/OtpInput";
+import { StageProgress } from "@/components/site/StageProgress";
+import Link from "next/link";
 import type { StatusResult } from "@/lib/status";
 
-const STEPS = ["Applied", "In review", "Shortlisted", "Interview", "Selected"];
 const fmt = (d: string) => new Date(d).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" });
 
 export function StatusTracker({ initialId, initialEmail }: { initialId: string; initialEmail: string }) {
@@ -197,20 +198,9 @@ export function StatusTracker({ initialId, initialEmail }: { initialId: string; 
           <div className="p-7">
             <p className={`font-display text-xl font-semibold ${closed ? "text-muted" : "text-teal-deep"}`}>{result.stage.label}</p>
             {!closed ? (
-              <ol className="mt-6 grid grid-cols-5 gap-1.5">
-                {STEPS.map((s, i) => {
-                  const done = i <= result.stage.step;
-                  return (
-                    <li key={s} className="flex flex-col items-center gap-2 text-center">
-                      <span className={`h-2 w-full rounded-full ${done ? "bg-teal" : "bg-paper-2"}`} />
-                      <span className={`grid size-8 place-items-center rounded-full ${done ? "bg-teal text-white" : "bg-paper-2 text-muted"}`}>
-                        {done ? <Check className="size-4" strokeWidth={3} /> : <span className="text-xs font-bold">{i + 1}</span>}
-                      </span>
-                      <span className={`text-[11px] font-medium leading-tight sm:text-xs ${done ? "text-ink" : "text-muted"}`}>{s}</span>
-                    </li>
-                  );
-                })}
-              </ol>
+              <div className="mt-6">
+                <StageProgress step={result.stage.step} />
+              </div>
             ) : (
               <p className="mt-3 flex items-start gap-2 text-[15px] text-muted">
                 <XCircle className="mt-0.5 size-5 shrink-0" /> We&apos;ll reach out when a better-fitting role opens up.
@@ -251,6 +241,12 @@ export function StatusTracker({ initialId, initialEmail }: { initialId: string; 
               <button onClick={reset} className="text-sm font-semibold text-muted hover:text-ink">
                 Check another
               </button>
+            </div>
+            <div className="mt-6 rounded-2xl bg-paper px-5 py-4 text-sm">
+              You&apos;re signed in on this browser.{" "}
+              <Link href="/account" className="font-semibold text-teal-deep underline-offset-4 hover:underline">
+                See all your applications →
+              </Link>
             </div>
           </div>
         </div>

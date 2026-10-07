@@ -42,6 +42,16 @@ const sections: LegalSection[] = [
           <li>Languages you speak, shift preference and expected salary</li>
           <li>The role you applied for and any notes from your conversations with our team</li>
         </ul>
+        <h3>When you sign in or use the resume builder</h3>
+        <ul>
+          <li>Your email address, which is how you sign in (there is no password)</li>
+          <li>
+            Anything you type into the free resume builder — such as your work history, education, skills and languages.
+            While you are not signed in, your draft stays only in your own browser on your device. If you download a PDF
+            without signing in, we use the content just to create the file and do not keep it.
+          </li>
+          <li>When you save your resume to your account, we store it with your email address</li>
+        </ul>
         <h3>When you use the website</h3>
         <ul>
           <li>The email verification codes we send you (stored only in scrambled form, deleted within an hour)</li>
@@ -64,7 +74,14 @@ const sections: LegalSection[] = [
           <li>To screen your profile and match you with suitable job openings</li>
           <li>To share your profile with hiring partners for roles you applied for or agreed to be considered for</li>
           <li>To contact you by call, WhatsApp, SMS or email about your application, interviews and joining</li>
-          <li>To verify your email address and let you check your application status</li>
+          <li>To verify your email address, sign you in and show you the status of your applications</li>
+          <li>
+            To store the resume you save, and to let our recruiters view it when matching you to suitable roles
+          </li>
+          <li>
+            If you choose “Get matched to jobs” in the resume builder, to create a candidate profile from your resume and
+            consider you for openings with our hiring partners
+          </li>
           <li>To follow up after you join (for example, in your first month) to support your placement</li>
           <li>To respond to employer enquiries and send quotations</li>
           <li>To prevent fraud, spam and misuse of our services, and to meet legal obligations</li>
@@ -97,7 +114,8 @@ const sections: LegalSection[] = [
           <li>
             <strong>Hiring partners</strong> — the companies whose roles you apply or are matched for receive your
             application details (for example, an application form with your contact, education and experience
-            details). They use it to make hiring decisions under their own privacy policies.
+            details). They use it to make hiring decisions under their own privacy policies. A resume you build is
+            shared with a hiring partner only if you apply or choose “Get matched to jobs”.
           </li>
           <li>
             <strong>Service providers</strong> who help us run KelasaHub — website hosting, our cloud database (MongoDB
@@ -131,6 +149,10 @@ const sections: LegalSection[] = [
             <tr>
               <td>Candidate profiles and application history</td>
               <td>24 months after your last activity with us, so we can match you to future roles</td>
+            </tr>
+            <tr>
+              <td>Resumes saved to your account</td>
+              <td>Until you delete them (you can do this yourself from the resume builder), or 24 months after your last sign-in</td>
             </tr>
             <tr>
               <td>Email verification codes</td>
@@ -177,8 +199,15 @@ const sections: LegalSection[] = [
     body: (
       <>
         <p>
-          The public website does not use advertising or analytics cookies. We use one essential cookie to keep our staff
-          signed in to the admin panel; it is not set for candidates.
+          The public website does not use advertising or analytics cookies. We use only essential cookies: one keeps our
+          staff signed in to the admin panel, and one keeps candidates signed in to their account. A candidate sign-in
+          lasts until you close your browser — or 30 days if you sign in from the “My account” page — and ends when you
+          sign out.
+        </p>
+        <p>
+          The resume builder saves your draft in your browser&apos;s local storage so you don&apos;t lose your work. It
+          never leaves your device unless you save it to your account or download a PDF, and you can clear it at any
+          time from your browser settings.
         </p>
         <p>
           Our “Visit us” section shows an embedded Google Map, and links open WhatsApp and Instagram. When you interact

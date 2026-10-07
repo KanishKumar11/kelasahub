@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Hero } from "@/components/site/Hero";
 import { Openings } from "@/components/site/Openings";
-import { EmployerBand, HowItWorks, Languages, OurPromise, Testimonials, TrackBand } from "@/components/site/Story";
+import { EmployerBand, HowItWorks, Languages, OurPromise, ResumeBand, Testimonials, TrackBand } from "@/components/site/Story";
 import { Faq } from "@/components/site/Faq";
 import { Visit } from "@/components/site/Visit";
 import { JsonLd } from "@/components/site/JsonLd";
@@ -33,6 +33,7 @@ export default async function HomePage() {
       <OurPromise />
       <Languages />
       <Testimonials />
+      <ResumeBand />
       <TrackBand />
       <Faq />
       <EmployerBand partners={partners} />

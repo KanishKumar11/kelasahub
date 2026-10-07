@@ -2,7 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, FileText, Mail, Phone } from "lucide-react";
 import { connectDB } from "@/lib/db";
-import { Candidate, Job, Partner, timeToFill } from "@/lib/models";
+import { Candidate, Job, Partner, Resume, timeToFill } from "@/lib/models";
 import {
   ATTRITION,
   INTERVIEW_STATUS,
@@ -33,10 +33,11 @@ export default async function CandidatePage(props: PageProps<"/admin/candidates/
     .lean();
   if (!c) notFound();
 
-  const [partners, jobs, others] = await Promise.all([
+  const [partners, jobs, others, hasResume] = await Promise.all([
     Partner.find({ isActive: true }).sort({ name: 1 }).select("name").lean(),
     Job.find().select("title").lean(),
     Candidate.find({ phone: c.phone, _id: { $ne: c._id } }).select("candidateId role dateApplied screeningStatus overallStatus").sort({ dateApplied: -1 }).lean(),
+    c.email ? Resume.exists({ email: c.email }).then(Boolean) : false,
   ]);
 
   const ttf = timeToFill(c);
@@ -108,6 +109,11 @@ export default async function CandidatePage(props: PageProps<"/admin/candidates/
             <a href={`/api/admin/pdf/application?ids=${id}`} target="_blank" className={btn.primary}>
               <FileText className="size-4" /> Application PDF
             </a>
+            {hasResume && (
+              <a href={`/api/admin/pdf/resume?email=${encodeURIComponent(c.email)}`} target="_blank" className={btn.secondary}>
+                <FileText className="size-4" /> Resume
+              </a>
+            )}
           </div>
         </div>
         <div className="grid grid-cols-2 gap-x-6 gap-y-4 border-t border-black/5 bg-slate-50/60 p-5 sm:grid-cols-4 lg:grid-cols-7 sm:p-6">

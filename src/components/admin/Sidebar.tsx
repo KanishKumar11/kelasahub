@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Briefcase, Building2, ExternalLink, Handshake, LayoutDashboard, LogOut, Menu, UserCog, Users, X } from "lucide-react";
+import { Briefcase, Building2, ExternalLink, FileText, Handshake, LayoutDashboard, LogOut, Menu, UserCog, Users, X } from "lucide-react";
 import { logoutAction } from "@/app/admin/actions";
 import { Logo } from "@/components/site/Logo";
 
@@ -18,6 +18,7 @@ export function Sidebar({ user, counts }: Props) {
   const items = [
     { href: "/admin", label: "Dashboard", icon: LayoutDashboard, exact: true },
     { href: "/admin/candidates", label: "Candidates", icon: Users, badge: counts.newCandidates },
+    { href: "/admin/resumes", label: "Resumes", icon: FileText },
     { href: "/admin/jobs", label: "Jobs", icon: Briefcase },
     { href: "/admin/partners", label: "Partners", icon: Building2 },
     { href: "/admin/leads", label: "Business leads", icon: Handshake, badge: counts.newLeads },

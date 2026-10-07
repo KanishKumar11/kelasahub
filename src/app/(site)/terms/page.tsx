@@ -36,6 +36,11 @@ const sections: LegalSection[] = [
           work location and employment terms are set by the hiring company. Job details on our website are provided by
           our partners and may change; the employer&apos;s offer letter is what counts.
         </p>
+        <p>
+          We also offer a free <strong>resume builder</strong> and a candidate account where you can follow your
+          applications. Both are free to use. The resume you create is yours — you are responsible for making sure what it
+          says is true, and you may use the PDF anywhere you like.
+        </p>
       </>
     ),
   },
@@ -65,7 +70,7 @@ const sections: LegalSection[] = [
           <li>Give true, complete and current information about yourself, your education and your experience</li>
           <li>Apply only for yourself, using your own phone number and email address</li>
           <li>Attend interviews you confirm, or tell us in advance if you cannot</li>
-          <li>Keep your Candidate ID and verification codes private</li>
+          <li>Keep your Candidate ID and verification codes private, and sign out of your account on shared devices</li>
         </ul>
         <p>
           We may reject or remove applications that contain false information, and we may stop working with candidates who

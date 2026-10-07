@@ -9,6 +9,8 @@ export function Footer() {
       title: "Candidates",
       links: [
         { label: "Current openings", href: "/jobs" },
+        { label: "Free resume builder", href: "/resume-builder" },
+        { label: "My account", href: "/account" },
         { label: "Track application", href: "/status" },
         { label: "FAQs", href: "/faq" },
       ],

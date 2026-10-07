@@ -66,11 +66,13 @@ const candidateId = z
 export const otpSendSchema = z.discriminatedUnion("purpose", [
   z.object({ purpose: z.literal("apply"), email }),
   z.object({ purpose: z.literal("status"), email, candidateId }),
+  z.object({ purpose: z.literal("login"), email }),
 ]);
 
 export const otpVerifySchema = z.discriminatedUnion("purpose", [
   z.object({ purpose: z.literal("apply"), email, code: z.string().trim().regex(/^\d{6}$/, "Enter the 6-digit code") }),
   z.object({ purpose: z.literal("status"), email, candidateId, code: z.string().trim().regex(/^\d{6}$/, "Enter the 6-digit code") }),
+  z.object({ purpose: z.literal("login"), email, code: z.string().trim().regex(/^\d{6}$/, "Enter the 6-digit code") }),
 ]);
 
 export function firstError(err: z.ZodError) {

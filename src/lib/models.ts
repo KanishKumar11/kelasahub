@@ -21,6 +21,7 @@ const make = {
   Media: () => model("Media", mediaSchema),
   Counter: () => model("Counter", counterSchema),
   Otp: () => model("Otp", otpSchema),
+  Resume: () => model("Resume", resumeSchema),
 };
 function getModel<K extends keyof typeof make>(name: K): ReturnType<(typeof make)[K]> {
   return (models[name] ?? make[name]()) as ReturnType<(typeof make)[K]>;
@@ -200,7 +201,7 @@ export const Media = getModel("Media");
 // MongoDB's TTL index deletes documents an hour after creation.
 const otpSchema = new Schema({
   email: { type: String, required: true, lowercase: true, index: true },
-  purpose: { type: String, enum: ["apply", "status"], required: true },
+  purpose: { type: String, enum: ["apply", "status", "login"], required: true },
   codeHash: { type: String, required: true },
   expiresAt: { type: Date, required: true },
   attempts: { type: Number, default: 0 },
@@ -208,6 +209,18 @@ const otpSchema = new Schema({
   createdAt: { type: Date, default: Date.now, expires: 3600 },
 });
 export const Otp = getModel("Otp");
+
+/* ---------------------------------- Resumes --------------------------------- */
+// Built with the free resume builder; one per candidate email. The shape is validated
+// by resumeSchema in lib/resume.ts before it is saved.
+const resumeSchema = new Schema(
+  {
+    email: { type: String, required: true, unique: true, lowercase: true, trim: true },
+    data: { type: Schema.Types.Mixed, required: true },
+  },
+  { timestamps: true, minimize: false },
+);
+export const Resume = getModel("Resume");
 
 /* --------------------------------- Counters --------------------------------- */
 const counterSchema = new Schema({ _id: String, seq: { type: Number, default: 0 } });

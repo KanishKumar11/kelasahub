@@ -74,6 +74,7 @@ export const SOURCES = [
   "Job Application Form",
   "Talent Pool",
   "Chatbot",
+  "Resume Builder",
   "Walk-in",
   "Referral",
   "Phone Call",

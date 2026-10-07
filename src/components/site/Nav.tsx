@@ -3,19 +3,18 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ArrowRight, Menu, X } from "lucide-react";
+import { ArrowRight, Menu, UserRound, X } from "lucide-react";
 import { Logo } from "./Logo";
 
 const LINKS = [
   { label: "Jobs", href: "/jobs" },
+  { label: "Free resume", href: "/resume-builder" },
   { label: "For employers", href: "/employers" },
   { label: "About", href: "/about" },
-  { label: "FAQs", href: "/faq" },
   { label: "Contact", href: "/contact" },
-  { label: "Track application", href: "/status" },
 ];
 
-export function Nav() {
+export function Nav({ signedIn = false }: { signedIn?: boolean }) {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
@@ -53,6 +52,15 @@ export function Nav() {
           ))}
         </div>
         <div className="flex items-center gap-2">
+          <Link
+            href="/account"
+            aria-current={active("/account") ? "page" : undefined}
+            aria-label={signedIn ? "My account" : "Sign in"}
+            className="inline-flex items-center gap-1.5 rounded-full border-2 border-ink bg-white px-3 py-2 text-sm font-bold transition hover:bg-ink hover:text-white sm:px-4"
+          >
+            <UserRound className="size-4" />
+            <span className="hidden sm:inline">{signedIn ? "My account" : "Sign in"}</span>
+          </Link>
           <Link
             href="/jobs"
             className="group hidden items-center gap-1.5 rounded-full border-2 border-ink bg-sun px-4 py-2 text-sm font-bold text-ink shadow-[3px_3px_0_var(--color-ink)] transition hover:-translate-y-0.5 hover:shadow-[4px_4px_0_var(--color-ink)] sm:inline-flex"

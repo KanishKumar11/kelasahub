@@ -8,6 +8,7 @@ const nextConfig: NextConfig = {
   outputFileTracingIncludes: {
     "/api/admin/pdf/*": ["./assets/**"],
     "/api/application-pdf": ["./assets/**"],
+    "/api/resume/pdf": ["./assets/**"],
   },
   experimental: {
     // The dev cache grows to hundreds of MB; this machine's drive is nearly full.

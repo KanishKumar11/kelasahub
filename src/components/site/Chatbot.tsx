@@ -15,7 +15,7 @@ type Ask = null | "name" | "phone" | "email" | "applyCode" | "statusId" | "statu
 
 export function FloatingActions({ jobs }: { jobs: PublicJob[] }) {
   return (
-    <div className="fixed bottom-3 right-3 z-40 flex flex-col items-end gap-2 sm:bottom-5 sm:right-6 sm:gap-3">
+    <div data-floating-actions className="fixed bottom-3 right-3 z-40 flex flex-col items-end gap-2 sm:bottom-5 sm:right-6 sm:gap-3">
       <a
         href={SITE.instagram}
         target="_blank"

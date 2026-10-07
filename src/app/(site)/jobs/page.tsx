@@ -4,7 +4,7 @@ import { getActiveJobs } from "@/lib/queries";
 import { HIRING_STATS, SITE } from "@/lib/constants";
 import { PageHero } from "@/components/site/PageHero";
 import { Openings } from "@/components/site/Openings";
-import { TrackBand } from "@/components/site/Story";
+import { ResumeBand, TrackBand } from "@/components/site/Story";
 import { JsonLd } from "@/components/site/JsonLd";
 import { Reveal } from "@/components/site/Reveal";
 
@@ -63,6 +63,7 @@ export default async function JobsPage() {
           ))}
         </div>
       </section>
+      <ResumeBand />
       <TrackBand />
       <div className="h-14" />
     </>

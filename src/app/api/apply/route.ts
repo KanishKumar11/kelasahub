@@ -6,6 +6,7 @@ import { rateLimit } from "@/lib/rate-limit";
 import { verifyEmailToken } from "@/lib/otp";
 import { sendApplicationConfirmation } from "@/lib/mail";
 import { applicationPdfPath, applicationPdfUrl } from "@/lib/pdf/applications";
+import { signInCandidate } from "@/lib/candidate-auth";
 
 export async function POST(req: Request) {
   if (!rateLimit(req, "apply", 8)) {
@@ -23,6 +24,8 @@ export async function POST(req: Request) {
   }
 
   await connectDB();
+  // They just proved they own this email — open their account for this browser session.
+  await signInCandidate(d.email, false);
 
   // Same person applying for the same role again within 3 days → reuse their ID.
   const recent = await Candidate.findOne({
