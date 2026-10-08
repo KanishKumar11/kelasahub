@@ -17,8 +17,8 @@ const sections: LegalSection[] = [
     body: (
       <>
         <p>
-          KelasaHub (“KelasaHub”, “we”, “us”) is a recruitment consultancy that connects job seekers with call-centre,
-          BPO and related employers in Bengaluru. Our office is at {OFFICE.address}.
+          KelasaHub (“KelasaHub”, “we”, “us”) is a recruitment consultancy that connects job seekers with
+          employers across industries in Bengaluru. Our office is at {OFFICE.address}.
         </p>
         <p>
           This policy explains what personal data we collect through <strong>kelasahub.in</strong>,

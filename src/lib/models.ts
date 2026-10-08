@@ -97,6 +97,7 @@ const candidateSchema = new Schema(
     job: { type: Schema.Types.ObjectId, ref: "Job", default: null },
     role: { type: String, default: "" },
     area: { type: String, default: "" },
+    geo: { type: { lat: Number, lng: Number }, default: null }, // pin dropped on the map, when area is "Other"
     dateApplied: { type: Date, default: Date.now, index: true },
 
     // Application-form details (used in the PDF)

@@ -63,6 +63,7 @@ export async function POST(req: Request) {
     address: d.address,
     pincode: d.pincode,
     area: d.area,
+    geo: d.geo,
     languages: d.languages,
     intlLanguages: d.intlLanguages,
     employmentStatus: d.employmentStatus,

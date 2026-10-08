@@ -4,9 +4,9 @@
 export const SITE = {
   name: "KelasaHub",
   url: process.env.NEXT_PUBLIC_SITE_URL || "https://kelasahub.in",
-  tagline: "Free BPO & Call Centre Placements, Bangalore",
+  tagline: "Free Job Placements Across Bangalore",
   description:
-    "KelasaHub is a free-to-candidate job consultancy for Bangalore's call centre and BPO industry. No placement fees, ever.",
+    "KelasaHub is a free-to-candidate job consultancy connecting Bangalore job seekers with verified roles across customer support, sales, operations, back office and more. No placement fees, ever.",
   email: "support@kelasahub.in",
   phoneDisplay: "+91 96069 06930",
   phoneTel: "+919606906930",
@@ -46,6 +46,7 @@ export function candidateWhatsApp(phone: string, text?: string) {
 /** Headline numbers shown on the website. Update these as hiring changes. */
 export const HIRING_STATS = {
   openPositions: 240,
+  jobTypes: 10, // shown as "10+ job types"
   payMin: 15_000,
   payMax: 75_000,
   partners: 6,

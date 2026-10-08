@@ -98,7 +98,7 @@ function Chatbot({ jobs }: { jobs: PublicJob[] }) {
     setAsk("statusId");
   };
   const about = () => {
-    bot("KelasaHub is a free-to-candidate job consultancy for Bangalore's call-centre and BPO industry. No placement fees, ever — we're paid by our hiring partners, not by you.");
+    bot("KelasaHub is a free-to-candidate job consultancy connecting Bangalore job seekers with verified companies across industries. No placement fees, ever — we're paid by our hiring partners, not by you.");
     options([
       { label: "💼 View current openings", run: openings },
       { label: "⬅ Back to menu", run: menu },

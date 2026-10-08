@@ -13,8 +13,8 @@ export const dynamic = "force-dynamic";
 const k = (n: number) => `₹${Math.round(n / 1000)}K`;
 
 export const metadata: Metadata = {
-  title: "BPO & Call Centre Jobs in Bangalore",
-  description: `${HIRING_STATS.openPositions} open BPO, telecaller, customer support and back-office jobs in Bangalore paying ${k(HIRING_STATS.payMin)}–${k(HIRING_STATS.payMax)} a month. Freshers welcome, zero placement fee — apply in two minutes.`,
+  title: "Jobs in Bangalore — Support, Sales, Operations & More",
+  description: `${HIRING_STATS.openPositions} open customer support, sales, telecaller, operations and back-office jobs in Bangalore paying ${k(HIRING_STATS.payMin)}–${k(HIRING_STATS.payMax)} a month. Freshers welcome, zero placement fee — apply in two minutes.`,
   alternates: { canonical: "/jobs" },
 };
 
@@ -31,13 +31,13 @@ export default async function JobsPage() {
       />
       <PageHero
         crumbs={[{ label: "Jobs", href: "/jobs" }]}
-        eyebrow={`${HIRING_STATS.openPositions} openings · ${jobs.length} job types`}
+        eyebrow={`${HIRING_STATS.openPositions}+ openings · ${HIRING_STATS.jobTypes}+ job types`}
         title={
           <>
-            BPO &amp; call centre jobs in <span className="accent text-teal-deep">Bangalore.</span>
+            Find your next job in <span className="accent text-teal-deep">Bangalore.</span>
           </>
         }
-        lead={`Verified, salaried roles paying ${k(HIRING_STATS.payMin)}–${k(HIRING_STATS.payMax)} a month — voice, sales, support and back office. Freshers welcome, and you never pay a rupee.`}
+        lead={`Verified, salaried roles paying ${k(HIRING_STATS.payMin)}–${k(HIRING_STATS.payMax)} a month — customer support, sales, operations, back office, HR and more. Freshers welcome, and you never pay a rupee.`}
       />
       <Openings
         jobs={jobs}
