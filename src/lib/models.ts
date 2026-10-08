@@ -59,6 +59,10 @@ const jobSchema = new Schema(
     location: { type: String, default: "HBR Layout, Bangalore" },
     employmentType: { type: String, default: "FULL_TIME" },
     openings: { type: Number, default: null },
+    workMode: { type: String, default: "onsite" }, // onsite | remote | hybrid
+    shifts: { type: Number, default: null }, // number of shifts
+    shiftStart: { type: String, default: "" }, // "HH:MM" 24h
+    shiftEnd: { type: String, default: "" },
     image: { type: String, default: "" },
     isActive: { type: Boolean, default: true },
     order: { type: Number, default: 0 },

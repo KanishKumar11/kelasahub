@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { ArrowDown, ArrowRight, ArrowUp, BriefcaseBusiness, Check, Cloud, Download, Eye, Loader2, Pencil, Plus, RotateCcw, Sparkles, Trash2, X } from "lucide-react";
+import { ArrowDown, ArrowRight, ArrowUp, BriefcaseBusiness, Check, Cloud, Download, Eye, Loader2, Pencil, Plus, RotateCcw, Sparkles, SpellCheck, Trash2, X } from "lucide-react";
 import {
   ACCENTS,
   LANGUAGE_LEVELS,
@@ -18,6 +18,7 @@ import {
   type Accent,
   type ResumeData,
 } from "@/lib/resume";
+import { applyFixes, checkText, issueKey, type CheckMode, type Issue } from "@/lib/grammar";
 import { CandidateSignIn } from "@/components/site/CandidateSignIn";
 import { ResumePreview } from "@/components/site/ResumePreview";
 import { WhatsAppIcon } from "@/components/site/BrandIcons";
@@ -48,8 +49,17 @@ const clean = (r: ResumeData): ResumeData => ({
   languages: r.languages.filter((l) => l.name.trim()),
 });
 
+/** Every free-text field the writing check looks at. */
+const writingFields = (r: ResumeData): [string, CheckMode][] => [
+  [r.headline, "phrase"],
+  [r.summary, "prose"],
+  ...r.experience.flatMap((e): [string, CheckMode][] => [[e.role, "phrase"], [e.points, "lines"]]),
+  ...r.education.map((e): [string, CheckMode] => [e.degree, "phrase"]),
+  [r.certifications, "lines"],
+];
+
 /** How complete the resume is, with the next thing worth adding. */
-function strength(r: ResumeData) {
+function strength(r: ResumeData, writingIssues: number) {
   const checks: [boolean, string][] = [
     [!!r.name && !!r.phone && !!r.email, "Add your name, phone and email"],
     [!!r.headline, "Add a one-line headline"],
@@ -60,7 +70,8 @@ function strength(r: ResumeData) {
     [r.experience.some((e) => (e.role || e.company) && pointsOf(e).length > 0), "Add experience with a few achievements (internships count)"],
   ];
   const done = checks.filter(([ok]) => ok).length;
-  return { pct: Math.round((done / checks.length) * 100), next: checks.find(([ok]) => !ok)?.[1] };
+  const fix = writingIssues ? `Fix ${writingIssues} writing suggestion${writingIssues > 1 ? "s" : ""}` : undefined;
+  return { pct: Math.round((done / checks.length) * 100), next: checks.find(([ok]) => !ok)?.[1] ?? fix };
 }
 
 export default function ResumeBuilder({
@@ -92,6 +103,8 @@ export default function ResumeBuilder({
   const [downloading, setDownloading] = useState(false);
   const [error, setError] = useState("");
   const [signInOpen, setSignInOpen] = useState(false);
+  // Writing suggestions the candidate chose to keep as typed (e.g. a company's own spelling).
+  const [ignored, setIgnored] = useState<string[]>([]);
   const first = useRef(true);
 
   const set = <K extends keyof ResumeData>(k: K, v: ResumeData[K]) => setR((p) => ({ ...p, [k]: v }));
@@ -159,7 +172,12 @@ export default function ResumeBuilder({
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
-  const st = strength(r);
+  const issuesIn = (text: string, mode: CheckMode) => checkText(text, mode).filter((i) => !ignored.includes(issueKey(text, i)));
+  const writingIssues = writingFields(r).reduce((n, [text, mode]) => n + issuesIn(text, mode).length, 0);
+  const st = strength(r, writingIssues);
+  const check = (text: string, mode: CheckMode, onFix: (v: string) => void) => (
+    <Checks text={text} issues={issuesIn(text, mode)} onFix={onFix} onIgnore={(k) => setIgnored((p) => [...p, k])} />
+  );
 
   return (
     <div className="mx-auto max-w-7xl px-4 pb-28 sm:px-6 lg:pb-24">
@@ -286,6 +304,7 @@ export default function ResumeBuilder({
                 <Input label="Location" value={r.location} onChange={(v) => set("location", v)} placeholder="KR Puram, Bengaluru" />
               </div>
             </div>
+            {check(r.headline, "phrase", (v) => set("headline", v))}
           </Card>
 
           <Card title="Profile summary" hint="Two or three lines on who you are and what you're great at.">
@@ -297,6 +316,7 @@ export default function ResumeBuilder({
               ))}
             </div>
             <TextArea value={r.summary} onChange={(v) => set("summary", v)} rows={4} max={800} placeholder="Tap a starter above, then make it yours." />
+            {check(r.summary, "prose", (v) => set("summary", v))}
           </Card>
 
           <Card title="Experience" hint="Fresher? Add internships, part-time work or college projects — or skip this.">
@@ -324,9 +344,14 @@ export default function ResumeBuilder({
                           <input type="checkbox" checked={e.current} onChange={(ev) => upd({ current: ev.target.checked })} className="accent-teal" /> I work here now
                         </label>
                       </div>
+                      <div className="sm:col-span-2">
+                        <Input label="Location (optional)" value={e.location} onChange={(v) => upd({ location: v })} placeholder="Whitefield, Bengaluru" />
+                      </div>
                     </div>
+                    {check(e.role, "phrase", (v) => upd({ role: v }))}
                     <p className="mb-1.5 mt-4 text-sm font-semibold">What you did — one point per line</p>
                     <TextArea value={e.points} onChange={(v) => upd({ points: v })} rows={4} max={1200} placeholder={"Handled 80+ calls a day\nMet monthly targets"} />
+                    {check(e.points, "lines", (v) => upd({ points: v }))}
                     <div className="mt-2 flex flex-wrap gap-1.5">
                       {POINT_SUGGESTIONS.filter((p) => !e.points.includes(p)).slice(0, 4).map((p) => (
                         <Suggest key={p} onClick={() => upd({ points: e.points.trim() ? `${e.points.trim()}\n${p}` : p })}>
@@ -362,6 +387,7 @@ export default function ResumeBuilder({
                       <Input label="Year" value={e.year} onChange={(v) => upd({ year: v })} placeholder="2024" />
                       <Input label="Score (optional)" value={e.score} onChange={(v) => upd({ score: v })} placeholder="72%" />
                     </div>
+                    {check(e.degree, "phrase", (v) => upd({ degree: v }))}
                   </div>
                 );
               })}
@@ -423,6 +449,7 @@ export default function ResumeBuilder({
 
           <Card title="Certifications & achievements" hint="Optional — one per line. Typing certificates, awards, NCC, sports…">
             <TextArea value={r.certifications} onChange={(v) => set("certifications", v)} rows={3} max={600} placeholder={"Typing certificate — 40 WPM\nEmployee of the month, Mar 2025"} />
+            {check(r.certifications, "lines", (v) => set("certifications", v))}
           </Card>
 
           <div className="flex flex-col gap-3 rounded-[1.75rem] border-2 border-dashed border-ink/30 p-5 sm:flex-row sm:items-center sm:justify-between">
@@ -551,6 +578,48 @@ function TextArea({ value, onChange, rows, max, placeholder }: { value: string; 
       <p className="mt-1 text-right text-[11px] text-muted">
         {value.length}/{max}
       </p>
+    </div>
+  );
+}
+
+/** Inline writing suggestions under a field: one-tap fix, fix all, or keep as typed. */
+function Checks({ text, issues, onFix, onIgnore }: { text: string; issues: Issue[]; onFix: (v: string) => void; onIgnore: (key: string) => void }) {
+  if (!issues.length) return null;
+  return (
+    <div className="mt-2 animate-pop rounded-xl border border-sun bg-sun-soft/70 p-2.5" role="status">
+      <div className="mb-2 flex items-center justify-between gap-2">
+        <p className="inline-flex items-center gap-1.5 text-xs font-bold">
+          <SpellCheck className="size-3.5" /> {issues.length} writing suggestion{issues.length > 1 ? "s" : ""}
+        </p>
+        {issues.length > 1 && (
+          <button type="button" onClick={() => onFix(applyFixes(text, issues))} className="rounded-full px-2 py-0.5 text-xs font-bold underline underline-offset-2 hover:bg-white">
+            Fix all
+          </button>
+        )}
+      </div>
+      <ul className="flex flex-wrap gap-1.5">
+        {issues.slice(0, 8).map((i) => {
+          const from = text.slice(i.start, i.end);
+          const visual = from.trim() && i.replacement.trim() && !/space/i.test(i.message);
+          return (
+            <li key={`${i.start}-${i.message}`} className="inline-flex items-center gap-1 rounded-full border border-ink/15 bg-white py-0.5 pl-2.5 pr-0.5 text-xs" title={i.message}>
+              {visual ? (
+                <span>
+                  <s className="text-[#b9472b]">{from}</s> &rarr; <span className="font-semibold">{i.replacement}</span>
+                </span>
+              ) : (
+                <span>{i.message}</span>
+              )}
+              <button type="button" onClick={() => onFix(applyFixes(text, [i]))} className="ml-1 rounded-full bg-ink px-2 py-0.5 font-bold text-white hover:bg-teal">
+                Fix
+              </button>
+              <button type="button" onClick={() => onIgnore(issueKey(text, i))} aria-label="Keep as typed" title="Keep as typed" className="grid size-5 place-items-center rounded-full text-muted hover:bg-ink/5 hover:text-ink">
+                <X className="size-3" />
+              </button>
+            </li>
+          );
+        })}
+      </ul>
     </div>
   );
 }

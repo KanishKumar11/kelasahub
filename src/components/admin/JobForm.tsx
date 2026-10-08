@@ -4,6 +4,7 @@ import { useActionState, useRef, useState } from "react";
 import Image from "next/image";
 import { ImagePlus, Loader2, Trash2 } from "lucide-react";
 import { deleteJob, saveJob, type ActionResult } from "@/app/admin/actions";
+import { WORK_MODES } from "@/lib/constants";
 import { Card, Label, btn, inputCls } from "./ui";
 
 type Values = {
@@ -17,6 +18,10 @@ type Values = {
   requirements: string;
   location: string;
   openings: string;
+  workMode: string;
+  shifts: string;
+  shiftStart: string;
+  shiftEnd: string;
   image: string;
   order: string;
   isActive: boolean;
@@ -109,6 +114,30 @@ export function JobForm({
             <label className="block">
               <Label>Openings</Label>
               <input name="openings" type="number" defaultValue={v.openings} className={inputCls} />
+            </label>
+          </div>
+          <div className="grid gap-4 sm:grid-cols-4">
+            <label className="block">
+              <Label>Job type</Label>
+              <select name="workMode" defaultValue={v.workMode} className={inputCls}>
+                {WORK_MODES.map((m) => (
+                  <option key={m.value} value={m.value}>
+                    {m.label}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label className="block">
+              <Label>No. of shifts</Label>
+              <input name="shifts" type="number" min={1} defaultValue={v.shifts} className={inputCls} />
+            </label>
+            <label className="block">
+              <Label>Shift start</Label>
+              <input name="shiftStart" type="time" defaultValue={v.shiftStart} className={inputCls} />
+            </label>
+            <label className="block">
+              <Label>Shift end</Label>
+              <input name="shiftEnd" type="time" defaultValue={v.shiftEnd} className={inputCls} />
             </label>
           </div>
           <label className="block">

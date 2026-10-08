@@ -27,6 +27,8 @@ const dataUri = (file: string) =>
   `data:image/png;base64,${readFileSync(path.join(process.cwd(), "assets", file)).toString("base64")}`;
 export const LOGO_PATH = dataUri("pdf-logo.png");
 export const WATERMARK_PATH = dataUri("pdf-watermark.png");
+// Full-size logo for the single centred watermark on resumes.
+export const WATERMARK_CENTER_PATH = dataUri("pdf-watermark-center.png");
 
 export const C = {
   ink: "#0b1f3a",

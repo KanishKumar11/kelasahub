@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, ArrowRight, Building2, Check, Clock, IndianRupee, MapPin } from "lucide-react";
+import { ArrowLeft, ArrowRight, Briefcase, Building2, Check, Clock, IndianRupee, MapPin } from "lucide-react";
 import { getActiveJobs, getJobBySlug } from "@/lib/queries";
 import { jobPostingLd } from "@/lib/jsonld";
 import { SHIFT_TIMINGS, SITE, whatsappLink } from "@/lib/constants";
@@ -61,11 +61,12 @@ export default async function JobPage(props: PageProps<"/jobs/[slug]">) {
                 <span className="rounded-full bg-sun-soft px-3 py-1 text-xs font-semibold">₹0 placement fee</span>
               </div>
               <h1 className="mt-5 font-display text-5xl font-bold leading-[1] tracking-tight sm:text-6xl">{job.title}</h1>
-              <dl className="mt-7 grid gap-3 sm:grid-cols-3">
+              <dl className="mt-7 grid gap-3 sm:grid-cols-2">
                 {[
                   { icon: IndianRupee, label: "Salary", value: job.salary },
                   { icon: MapPin, label: "Location", value: job.location },
                   { icon: Building2, label: "Company", value: job.company || "KelasaHub partner" },
+                  { icon: Briefcase, label: "Job type", value: job.workModeLabel },
                 ].map(({ icon: Icon, label, value }) => (
                   <div key={label} className="rounded-2xl border border-line bg-white p-4">
                     <dt className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-muted">
@@ -96,14 +97,19 @@ export default async function JobPage(props: PageProps<"/jobs/[slug]">) {
                 </div>
                 <div>
                   <h2 className="flex items-center gap-2 font-display text-2xl font-semibold">
-                    <Clock className="size-5 text-teal-deep" /> Shift options
+                    <Clock className="size-5 text-teal-deep" /> {job.shiftTiming ? "Shift timing" : "Shift options"}
                   </h2>
                   <div className="mt-4 flex flex-wrap gap-2">
-                    {SHIFT_TIMINGS.map((s) => (
+                    {(job.shiftTiming ? [job.shiftTiming] : SHIFT_TIMINGS).map((s) => (
                       <span key={s} className="rounded-full border border-line bg-white px-4 py-2 text-sm font-medium">
                         {s}
                       </span>
                     ))}
+                    {job.shifts != null && (
+                      <span className="rounded-full bg-teal-soft px-4 py-2 text-sm font-semibold text-teal-deep">
+                        {job.shifts} {job.shifts === 1 ? "shift" : "shifts"}
+                      </span>
+                    )}
                   </div>
                 </div>
               </div>

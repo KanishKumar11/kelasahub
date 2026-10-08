@@ -1,6 +1,6 @@
-import { Document, Page, StyleSheet, Text, View } from "@react-pdf/renderer";
+import { Document, Image, Page, StyleSheet, Text, View } from "@react-pdf/renderer";
 import { ACCENTS, pointsOf, type ResumeData } from "../resume";
-import { C } from "./shared";
+import { C, WATERMARK_CENTER_PATH } from "./shared";
 
 // Single-column and text-only on purpose: applicant tracking systems read it cleanly.
 const st = StyleSheet.create({
@@ -20,6 +20,8 @@ const st = StyleSheet.create({
   bulletDot: { width: 10 },
   chips: { flexDirection: "row", flexWrap: "wrap" },
   chip: { fontSize: 9.5, borderWidth: 1, borderColor: C.line, borderRadius: 4, paddingVertical: 2, paddingHorizontal: 6, marginRight: 5, marginBottom: 5 },
+  // Fills the page and centres the logo; fixed so it repeats on every page, behind the text.
+  mark: { position: "absolute", top: 0, left: 0, right: 0, bottom: 0, alignItems: "center", justifyContent: "center" },
   foot: { position: "absolute", bottom: 22, left: 46, right: 46, fontSize: 7.5, color: "#9aa5b4", textAlign: "center" },
 });
 
@@ -42,6 +44,10 @@ export function ResumeDoc({ r }: { r: ResumeData }) {
   return (
     <Document title={`${r.name || "Resume"} — Resume`} author={r.name} creator="KelasaHub resume builder">
       <Page size="A4" style={st.page}>
+        <View style={st.mark} fixed>
+          {/* eslint-disable-next-line jsx-a11y/alt-text */}
+          <Image src={WATERMARK_CENTER_PATH} style={{ width: 170, height: 204, opacity: 0.05 }} />
+        </View>
         <Text style={[st.name, { color: C.ink }]}>{r.name || "Your Name"}</Text>
         {r.headline && <Text style={[st.headline, { color: accent }]}>{r.headline}</Text>}
         {contact.length > 0 && <Text style={st.contact}>{contact.join("   ·   ")}</Text>}
@@ -62,8 +68,8 @@ export function ResumeDoc({ r }: { r: ResumeData }) {
                   <Text style={st.date}>{[e.start, e.current ? "Present" : e.end].filter(Boolean).join(" – ")}</Text>
                 </View>
                 <Text style={st.org}>{[e.company, e.location].filter(Boolean).join(", ")}</Text>
-                {pointsOf(e).map((p) => (
-                  <View key={p} style={st.bullet}>
+                {pointsOf(e).map((p, j) => (
+                  <View key={j} style={st.bullet}>
                     <Text style={[st.bulletDot, { color: accent }]}>•</Text>
                     <Text style={{ flex: 1 }}>{p}</Text>
                   </View>
@@ -105,8 +111,8 @@ export function ResumeDoc({ r }: { r: ResumeData }) {
 
         {certs.length > 0 && (
           <Section title="Certifications & achievements" color={accent}>
-            {certs.map((c) => (
-              <View key={c} style={st.bullet}>
+            {certs.map((c, j) => (
+              <View key={j} style={st.bullet}>
                 <Text style={[st.bulletDot, { color: accent }]}>•</Text>
                 <Text style={{ flex: 1 }}>{c}</Text>
               </View>

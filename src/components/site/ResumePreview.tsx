@@ -12,7 +12,6 @@ function H({ color, children }: { color: string; children: ReactNode }) {
     </h3>
   );
 }
-// HTML twin of lib/pdf/Resume.tsx, drawn at A4 size (794px) and scaled to fit.
 
 /** Live HTML twin of lib/pdf/Resume.tsx, drawn at A4 size (794px) and scaled to fit its container. */
 export function ResumePreview({ r }: { r: ResumeData }) {
@@ -46,6 +45,12 @@ export function ResumePreview({ r }: { r: ResumeData }) {
           className="absolute left-0 top-0 origin-top-left bg-white px-[61px] py-[53px] font-sans text-[13.3px] leading-[1.45] text-[#1c2b40]"
           style={{ width: 794, minHeight: 1123, transform: `scale(${scale})` }}
         >
+          {/* Same centred logo watermark and footer as the PDF. */}
+          <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 -z-10 grid h-[1123px] place-items-center">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/assets/kelasahub-icon.png" alt="" className="w-[227px] opacity-5" />
+          </div>
+          <p aria-hidden className="absolute inset-x-[61px] bottom-[29px] text-center text-[10px] text-[#9aa5b4]">Made with the free resume builder at kelasahub.in</p>
           <p className="font-display text-[35px] font-bold leading-[1.1] text-ink">{r.name || "Your Name"}</p>
           {r.headline && (
             <p className="mt-1 text-[15px] font-semibold" style={{ color: accent }}>
@@ -71,8 +76,8 @@ export function ResumePreview({ r }: { r: ResumeData }) {
                     <p className="shrink-0 text-[12.6px] text-muted">{[e.start, e.current ? "Present" : e.end].filter(Boolean).join(" – ")}</p>
                   </div>
                   <p className="text-muted">{[e.company, e.location].filter(Boolean).join(", ")}</p>
-                  {pointsOf(e).map((p) => (
-                    <p key={p} className="mt-0.5 flex gap-2">
+                  {pointsOf(e).map((p, j) => (
+                    <p key={j} className="mt-0.5 flex gap-2">
                       <span style={{ color: accent }}>•</span>
                       <span>{p}</span>
                     </p>
@@ -116,8 +121,8 @@ export function ResumePreview({ r }: { r: ResumeData }) {
           {certs.length > 0 && (
             <>
               <H color={accent}>Certifications &amp; achievements</H>
-              {certs.map((c) => (
-                <p key={c} className="mt-0.5 flex gap-2">
+              {certs.map((c, j) => (
+                <p key={j} className="mt-0.5 flex gap-2">
                   <span style={{ color: accent }}>•</span>
                   <span>{c}</span>
                 </p>

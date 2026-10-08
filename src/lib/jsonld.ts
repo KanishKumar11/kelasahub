@@ -58,6 +58,7 @@ export function jobPostingLd(job: PublicJob) {
           },
         }
       : {}),
+    ...(job.workMode === "remote" ? { jobLocationType: "TELECOMMUTE", applicantLocationRequirements: { "@type": "Country", name: "India" } } : {}),
     directApply: true,
   };
 }

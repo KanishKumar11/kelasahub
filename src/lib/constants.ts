@@ -116,6 +116,20 @@ export const BUSINESS_TYPES = [
 ] as const;
 export const LEAD_STATUS = ["New", "Contacted", "Quoted", "Won", "Lost"] as const;
 
+export const WORK_MODES = [
+  { value: "onsite", label: "Onsite" },
+  { value: "remote", label: "Remote" },
+  { value: "hybrid", label: "Hybrid" },
+] as const;
+
+/** "13:30" → "1:30 PM" */
+export function formatTime(t: string) {
+  const m = /^(\d{1,2}):(\d{2})/.exec(t);
+  if (!m) return t;
+  const h = Number(m[1]);
+  return `${h % 12 || 12}:${m[2]} ${h < 12 ? "AM" : "PM"}`;
+}
+
 export const SHIFT_TIMINGS = [
   "8:00 AM – 5:00 PM",
   "9:00 AM – 6:00 PM",

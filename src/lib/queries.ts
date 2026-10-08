@@ -1,6 +1,7 @@
 import "server-only";
 import { connectDB } from "./db";
 import { Job, Partner } from "./models";
+import { WORK_MODES, formatTime } from "./constants";
 
 export type PublicJob = {
   id: string;
@@ -11,6 +12,10 @@ export type PublicJob = {
   description: string;
   requirements: string;
   location: string;
+  workMode: string;
+  workModeLabel: string;
+  shifts: number | null;
+  shiftTiming: string; // e.g. "9:00 AM – 6:00 PM", empty when not set
   image: string;
   company: string;
   freshersOk: boolean;
@@ -33,6 +38,10 @@ export async function getActiveJobs(): Promise<PublicJob[]> {
     description: j.description ?? "",
     requirements: j.requirements ?? "",
     location: j.location ?? "",
+    workMode: j.workMode ?? "onsite",
+    workModeLabel: WORK_MODES.find((m) => m.value === j.workMode)?.label ?? "Onsite",
+    shifts: j.shifts ?? null,
+    shiftTiming: j.shiftStart && j.shiftEnd ? `${formatTime(j.shiftStart)} – ${formatTime(j.shiftEnd)}` : "",
     image: j.image ?? "",
     company: j.partner?.name ?? "",
     freshersOk: /fresher/i.test(`${j.requirements} ${j.description}`),
