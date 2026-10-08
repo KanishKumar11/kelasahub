@@ -1,12 +1,20 @@
 import type { Metadata, Viewport } from "next";
-import { Bricolage_Grotesque, Inter, Instrument_Serif, Noto_Sans_Kannada } from "next/font/google";
+import { Bricolage_Grotesque, Inter, Instrument_Serif } from "next/font/google";
+import localFont from "next/font/local";
 import { SITE } from "@/lib/constants";
 import "./globals.css";
 
 const inter = Inter({ variable: "--font-inter", subsets: ["latin"] });
 const bricolage = Bricolage_Grotesque({ variable: "--font-bricolage", subsets: ["latin"] });
 const serif = Instrument_Serif({ variable: "--font-serif-src", subsets: ["latin"], weight: "400", style: ["normal", "italic"] });
-const kannada = Noto_Sans_Kannada({ variable: "--font-kannada-src", subsets: ["kannada"], weight: ["700", "800"] });
+// Self-hosted: next/font/google fails to resolve this font's files on Netlify builds.
+const kannada = localFont({
+  variable: "--font-kannada-src",
+  src: "./fonts/NotoSansKannada-700-800.woff2",
+  weight: "700 800",
+  display: "swap",
+  preload: false,
+});
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE.url),

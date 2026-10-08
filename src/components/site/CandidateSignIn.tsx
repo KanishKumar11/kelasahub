@@ -26,7 +26,7 @@ export function CandidateSignIn({ onSignedIn, initialEmail = "" }: { onSignedIn:
     setError("");
     try {
       const res = await fetch("/api/otp/send", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ purpose: "login", email: target }) });
-      const data = await res.json();
+      const data = await res.json().catch(() => ({}));
       // A cooldown means a code went out moments ago — still show the code step.
       if (!res.ok && !(res.status === 429 && data.retryAfter)) throw new Error(data.error);
       if (!res.ok && sentTo) setError(data.error);
@@ -47,7 +47,7 @@ export function CandidateSignIn({ onSignedIn, initialEmail = "" }: { onSignedIn:
     setError("");
     try {
       const res = await fetch("/api/otp/verify", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ purpose: "login", email: sentTo, code: c }) });
-      const data = await res.json();
+      const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(data.error);
       await onSignedIn();
     } catch (e) {
