@@ -108,10 +108,11 @@ async function main() {
   }
 
   const email = (process.env.ADMIN_EMAIL || "admin@kelasahub.in").toLowerCase();
-  const password = process.env.ADMIN_PASSWORD || "ChangeMe@123";
+  const password = process.env.ADMIN_PASSWORD;
   if (!(await User.exists({ email }))) {
+    if (!password) throw new Error("Set ADMIN_PASSWORD to create the first admin account.");
     await User.create({ name: "Admin", email, passwordHash: await bcrypt.hash(password, 10), role: "admin" });
-    console.log(`Created admin ${email} (password from ADMIN_PASSWORD${process.env.ADMIN_PASSWORD ? "" : ' — default "ChangeMe@123", change it!'})`);
+    console.log(`Created admin ${email} (password from ADMIN_PASSWORD)`);
   }
 
   console.log(`Seeded: ${await Partner.countDocuments()} partners, ${await Job.countDocuments()} jobs, ${await User.countDocuments()} users`);

@@ -1,0 +1,6 @@
+[build.environment]
+  # Configuration, not secrets: these values legitimately appear in code and build output
+  # (contact email, mail host, public site URL), so the secrets scan shouldn't fail on them.
+  SECRETS_SCAN_OMIT_KEYS = "ADMIN_EMAIL,SMTP_USER,SMTP_FROM,SMTP_HOST,SMTP_PORT,NEXT_PUBLIC_SITE_URL"
+  # Turbopack's build cache is never deployed.
+  SECRETS_SCAN_OMIT_PATHS = ".netlify/.next/cache/**,.next/cache/**"
