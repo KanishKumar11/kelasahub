@@ -14,10 +14,13 @@ import {
 } from "@/lib/constants";
 import { Chip, Field, Honeypot, SelectInput, TextInput } from "./ui";
 import { OtpInput } from "./OtpInput";
+import { LocationPicker } from "./LocationPicker";
 
 export type ApplyTarget =
   | { mode: "job"; role: string; jobId?: string; company?: string }
   | { mode: "talent" };
+
+const OTHER_ROLE = "Others";
 
 const STEPS_JOB = ["About you", "Experience", "Education"];
 
@@ -31,11 +34,14 @@ export function ApplyDialog({ target, onClose }: { target: ApplyTarget; onClose:
   const [busy, setBusy] = useState(false);
   const [done, setDone] = useState<{ id: string; duplicate?: boolean; pdfUrl?: string } | null>(null);
   const [f, setF] = useState({
-    role: isJob ? target.role : TALENT_POOL_ROLES[0],
+    role: isJob ? target.role : (TALENT_POOL_ROLES[0] as string),
+    roleOther: "",
     name: "",
     phone: "",
     email: "",
     area: "",
+    areaName: "", // neighbourhood captured from the map when area is "Other"
+    geo: null as { lat: number; lng: number } | null,
     pincode: "",
     nationality: "Indian",
     address: "",
@@ -83,10 +89,12 @@ export function ApplyDialog({ target, onClose }: { target: ApplyTarget; onClose:
 
   function validateStep(): string {
     if (step === 0) {
+      if (f.role === OTHER_ROLE && f.roleOther.trim().length < 2) return "Please type the role you're interested in.";
       if (f.name.trim().length < 2) return "Please enter your full name.";
       if (!/^(\+?91)?[6-9]\d{9}$/.test(f.phone.replace(/[\s-]/g, ""))) return "Please enter a valid 10-digit mobile number.";
       if (!/^\S+@\S+\.\S+$/.test(f.email.trim())) return "Please enter your email — we'll send a code to verify it.";
       if (f.pincode && !/^\d{6}$/.test(f.pincode)) return "Pincode must be 6 digits.";
+      if (f.area === "Other" && f.address.trim().length < 5) return "Please share your location on the map or type your address.";
       if (!f.consent) return "Please agree to the Privacy Policy and Terms to continue.";
     }
     return "";
@@ -161,14 +169,15 @@ export function ApplyDialog({ target, onClose }: { target: ApplyTarget; onClose:
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           source: isJob ? "Job Application Form" : "Talent Pool",
-          role: f.role,
+          role: f.role === OTHER_ROLE ? f.roleOther.trim() : f.role,
           jobId: isJob ? target.jobId : "",
           name: f.name,
           phone: f.phone,
           email,
           emailToken,
           consent: f.consent,
-          area: f.area,
+          area: f.area === "Other" && f.areaName ? `Other — ${f.areaName}`.slice(0, 60) : f.area,
+          geo: f.area === "Other" ? f.geo : null,
           pincode: f.pincode,
           nationality: f.nationality,
           address: f.address,
@@ -333,7 +342,19 @@ export function ApplyDialog({ target, onClose }: { target: ApplyTarget; onClose:
                         {TALENT_POOL_ROLES.map((r) => (
                           <option key={r}>{r}</option>
                         ))}
+                        <option>{OTHER_ROLE}</option>
                       </SelectInput>
+                    </Field>
+                  )}
+                  {!isJob && f.role === OTHER_ROLE && (
+                    <Field label="Which role?">
+                      <TextInput
+                        autoFocus
+                        value={f.roleOther}
+                        onChange={(e) => set("roleOther", e.target.value)}
+                        placeholder="e.g. Sales Executive, Data Entry, Delivery"
+                        maxLength={120}
+                      />
                     </Field>
                   )}
                   <Field label="Full name">
@@ -396,6 +417,32 @@ export function ApplyDialog({ target, onClose }: { target: ApplyTarget; onClose:
                       </Field>
                     )}
                   </div>
+                  {f.area === "Other" && (
+                    <div className="animate-rise space-y-3 rounded-2xl border border-line bg-white p-3.5">
+                      <LocationPicker
+                        onPick={(p) =>
+                          setF((prev) => ({
+                            ...prev,
+                            geo: { lat: p.lat, lng: p.lng },
+                            areaName: p.area,
+                            address: p.address || prev.address,
+                            pincode: p.pincode || prev.pincode,
+                          }))
+                        }
+                      />
+                      <Field label="Your address" hint="edit if needed">
+                        <textarea
+                          rows={3}
+                          value={f.address}
+                          onChange={(e) => set("address", e.target.value)}
+                          placeholder="House / street / area / city"
+                          autoComplete="street-address"
+                          maxLength={300}
+                          className="w-full rounded-xl border border-line bg-white px-3.5 py-3 text-[15px] text-ink placeholder:text-muted/60 outline-none transition focus:border-teal focus:ring-4 focus:ring-teal/15"
+                        />
+                      </Field>
+                    </div>
+                  )}
                   <label className="flex cursor-pointer items-start gap-3 rounded-2xl border-2 border-ink/10 bg-white p-3.5 text-[13px] leading-relaxed text-ink/80 transition has-[:checked]:border-teal has-[:checked]:bg-teal-soft/40">
                     <input
                       type="checkbox"

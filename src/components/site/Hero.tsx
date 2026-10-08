@@ -50,7 +50,7 @@ export function Hero({ partners, stats }: Props) {
           </h1>
 
           <p className="mt-7 max-w-lg text-lg leading-relaxed text-muted sm:text-xl">
-            Verified call-centre &amp; BPO jobs across Bangalore. We screen you once, match you to roles near home and
+            Verified jobs across Bangalore — support, sales, operations and more. We screen you once, match you to roles near home and
             call you back within a day — <span className="font-semibold text-ink">free for candidates, always.</span>
           </p>
 
