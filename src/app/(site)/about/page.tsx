@@ -8,7 +8,7 @@ import { Reveal } from "@/components/site/Reveal";
 
 export const metadata: Metadata = {
   title: "About KelasaHub — Free Job Placements in Bangalore",
-  description: `KelasaHub is a Bangalore job consultancy that places candidates in BPO and call-centre roles for free. ${HIRING_STATS.placed}+ candidates placed in ${HIRING_STATS.placedPeriod}, with ${HIRING_STATS.partners} hiring partners.`,
+  description: `KelasaHub is a Bangalore job consultancy that places candidates in verified roles across industries for free. ${HIRING_STATS.placed}+ candidates placed in ${HIRING_STATS.placedPeriod}, with ${HIRING_STATS.partners} hiring partners.`,
   alternates: { canonical: "/about" },
 };
 
@@ -26,7 +26,7 @@ export default function AboutPage() {
         lead={
           <>
             <span className="font-kannada font-bold text-ink">ಕೆಲಸ</span> (kelasa) means <em>work</em> in Kannada. KelasaHub connects Bangalore job
-            seekers with verified BPO and call-centre roles — and the hiring companies pay us, so candidates never pay a rupee.
+            seekers with verified jobs across industries — and the hiring companies pay us, so candidates never pay a rupee.
           </>
         }
       />

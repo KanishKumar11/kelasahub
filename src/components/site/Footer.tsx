@@ -71,7 +71,7 @@ export function Footer() {
           <div>
             <Logo light />
             <p className="mt-4 max-w-xs text-[15px] leading-relaxed text-white/60">
-              Free-to-candidate job consultancy for Bangalore&apos;s call-centre and BPO industry.
+              Free-to-candidate job consultancy connecting Bangalore&apos;s job seekers with verified companies — across every industry.
             </p>
             <div className="mt-6 flex gap-2.5">
               <a href={SITE.instagram} target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="grid size-11 place-items-center rounded-full bg-white/10 transition hover:bg-white/20">

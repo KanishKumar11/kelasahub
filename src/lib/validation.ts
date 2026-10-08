@@ -22,6 +22,11 @@ export const applySchema = z.object({
   address: optionalText(300),
   pincode: z.union([z.literal(""), z.string().trim().regex(/^\d{6}$/, "Pincode must be 6 digits")]).default(""),
   area: optionalText(60),
+  geo: z
+    .object({ lat: z.number().min(-90).max(90), lng: z.number().min(-180).max(180) })
+    .nullable()
+    .optional()
+    .default(null),
   languages: z.array(z.string().max(30)).max(10).optional().default([]),
   intlLanguages: z.array(z.string().max(30)).max(5).optional().default([]),
   employmentStatus: z.enum(["Fresher", "Experienced", ""]).optional().default(""),

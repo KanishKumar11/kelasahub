@@ -44,7 +44,7 @@ export function Openings({ jobs, limit, intro }: { jobs: PublicJob[]; limit?: nu
           {intro ?? (
           <div>
             <p className="flex items-center gap-2 text-sm font-bold uppercase tracking-[0.2em] text-teal-deep">
-              <span className="h-px w-8 bg-teal-deep" /> {HIRING_STATS.openPositions} openings · {jobs.length} job types
+              <span className="h-px w-8 bg-teal-deep" /> {HIRING_STATS.openPositions}+ openings · {HIRING_STATS.jobTypes}+ job types
             </p>
             <h2 className="mt-4 font-display text-5xl font-bold leading-[0.95] tracking-[-0.04em] sm:text-7xl">
               Pick your <span className="accent text-teal-deep">seat.</span>

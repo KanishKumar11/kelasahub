@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, FileText, Mail, Phone } from "lucide-react";
+import { ArrowLeft, FileText, Mail, MapPin, Phone } from "lucide-react";
 import { connectDB } from "@/lib/db";
 import { Candidate, Job, Partner, Resume, timeToFill } from "@/lib/models";
 import {
@@ -109,6 +109,11 @@ export default async function CandidatePage(props: PageProps<"/admin/candidates/
             <a href={`/api/admin/pdf/application?ids=${id}`} target="_blank" className={btn.primary}>
               <FileText className="size-4" /> Application PDF
             </a>
+            {c.geo?.lat != null && c.geo?.lng != null && (
+              <a href={`https://www.google.com/maps?q=${c.geo.lat},${c.geo.lng}`} target="_blank" rel="noopener noreferrer" className={btn.secondary}>
+                <MapPin className="size-4" /> Map
+              </a>
+            )}
             {hasResume && (
               <a href={`/api/admin/pdf/resume?email=${encodeURIComponent(c.email)}`} target="_blank" className={btn.secondary}>
                 <FileText className="size-4" /> Resume
