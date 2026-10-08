@@ -158,7 +158,7 @@ export const RESUME_EXAMPLES: ResumeExample[] = [
       headline: "Team Leader — Collections Process",
       phone: "+91 90000 12345",
       email: "irfan.m@example.com",
-      location: "HBR Layout, Bengaluru",
+      location: "Ramamurthy Nagar, Bengaluru",
       summary:
         "Team leader with 5 years in BPO collections, including 2 years leading a team of 15 telecallers. Known for steady recovery numbers, daily coaching and keeping attrition low through peak months.",
       skills: ["Team leadership", "Collections & follow-ups", "Call quality auditing", "MS Excel", "Objection handling", "CRM tools"],

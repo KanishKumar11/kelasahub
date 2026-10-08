@@ -136,7 +136,7 @@ export function Openings({ jobs, limit, intro }: { jobs: PublicJob[]; limit?: nu
               <div className="bg-grid-dark absolute inset-0 opacity-70" />
               <div className="relative">
                 <p className="font-display text-2xl font-bold sm:text-3xl">
-                  Most roles are at <span className="accent">Nex-Gen,</span> HBR Layout
+                  Most roles are right here in <span className="accent">Bengaluru</span>
                 </p>
                 <div className="mt-4 flex flex-wrap gap-2">
                   {PROCESSES.map((p) => (

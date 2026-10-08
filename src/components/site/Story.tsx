@@ -121,7 +121,7 @@ function StepVisual({ kind }: { kind: (typeof STEPS)[number]["visual"] }) {
       <div className={`${card} -rotate-1`}>
         <span className="sticker rotate-[-4deg] bg-teal text-[11px] text-white">SELECTED ✓</span>
         <p className="mt-4 font-display text-2xl font-bold">Joining Monday, 10 AM</p>
-        <p className="mt-1 text-sm text-muted">Telecaller · Nex-Gen, HBR Layout</p>
+        <p className="mt-1 text-sm text-muted">Telecaller · Bengaluru</p>
         <div className="mt-4 flex items-center justify-between border-t-2 border-dashed border-line pt-3 text-sm">
           <span className="text-muted">Fee you pay</span>
           <span className="font-display text-xl font-bold text-teal-deep">₹0</span>

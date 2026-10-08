@@ -128,7 +128,7 @@ type Stage = "ringing" | "declined" | "talking" | "offer";
 
 const LINES = [
   { who: "hr", text: "Hi Priya! Calling from KelasaHub 👋" },
-  { who: "hr", text: "You cleared the interview at Nex-Gen 🎉" },
+  { who: "hr", text: "You cleared the interview 🎉" },
   { who: "me", text: "Wait… really?! 😄" },
   { who: "hr", text: "Joining Monday, 10 AM. Day shift, just like you asked." },
 ];
@@ -303,7 +303,7 @@ function PhoneCall() {
               <dl className="mt-4 space-y-2 text-left text-[13px]">
                 {[
                   ["Role", "Telecaller · Voice"],
-                  ["Company", "Nex-Gen, HBR Layout"],
+                  ["Location", "Bengaluru"],
                   ["Salary", "₹18,000 + incentives"],
                   ["Joining", "Monday · 10:00 AM"],
                 ].map(([k, v]) => (
