@@ -66,7 +66,7 @@ export default async function ResumeExamplePage(props: PageProps<"/resume-builde
             <div className="mt-6 rounded-[1.75rem] bg-ink p-6 text-white">
               <p className="font-display text-xl font-bold">Make it yours in 10 minutes</p>
               <p className="mt-1 text-sm text-white/70">
-                Open it in the builder, replace the sample details with your own, and download a clean, ATS-friendly PDF. No sign-up needed.
+                Open it in the builder, replace the sample details with your own, and download a clean, ATS-friendly PDF. Just sign in with your email.
               </p>
               <Link href={use} className="btn-pop mt-5 inline-flex items-center gap-2 rounded-full border-2 border-ink bg-sun px-5 py-3 text-sm font-bold text-ink">
                 Edit this resume <ArrowRight className="size-4" />

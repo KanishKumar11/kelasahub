@@ -345,7 +345,7 @@ export function ResumeBand() {
             No resume? <span className="accent text-sun">No problem.</span>
           </h2>
           <p className="mt-4 max-w-md text-[17px] leading-relaxed text-white/85">
-            Build a clean, job-ready resume in 10 minutes — with ready-made lines for telecaller, support and sales roles. Download the PDF, no sign-up needed.
+            Build a clean, job-ready resume in 10 minutes — with ready-made lines for telecaller, support and sales roles. Sign in with your email and download the PDF.
           </p>
           <div className="mt-7 flex flex-col gap-3 sm:flex-row">
             <Link href="/resume-builder" className="btn-pop inline-flex items-center justify-center gap-2 rounded-full border-2 border-ink bg-sun px-6 py-3.5 text-sm font-bold text-ink">

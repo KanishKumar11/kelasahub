@@ -8,11 +8,12 @@ import { BuilderLoader } from "./BuilderLoader";
 import { ResumeExamples } from "@/components/site/ResumeExamples";
 import { exampleBySlug } from "@/lib/resume-examples";
 import { getActiveJobs } from "@/lib/queries";
+import { SignInPanel } from "../account/AccountClient";
 
 export const metadata: Metadata = {
   title: "Free Resume Builder for BPO & Call Centre Jobs",
   description:
-    "Make a professional resume in minutes — free, no sign-up needed. Ready-made lines for telecaller, customer support and sales roles. Download as PDF.",
+    "Make a professional resume in minutes — free with a quick email sign-in. Ready-made lines for telecaller, customer support and sales roles. Download as PDF.",
   alternates: { canonical: "/resume-builder" },
 };
 
@@ -41,7 +42,7 @@ export default async function ResumeBuilderPage(props: PageProps<"/resume-builde
       />
       <PageHero
         crumbs={[{ label: "Resume builder", href: "/resume-builder" }]}
-        eyebrow="Free · no sign-up needed"
+        eyebrow="Free · sign in with your email"
         tone="sun"
         title={
           <>
@@ -50,12 +51,24 @@ export default async function ResumeBuilderPage(props: PageProps<"/resume-builde
         }
         lead="Fill in the blanks, tap our ready-made lines for BPO and call-centre roles, and download a clean PDF. Free for every job seeker — always."
       />
-      <BuilderLoader
-        signedIn={!!session}
-        initial={initial}
-        example={ex ? { slug: ex.slug, role: ex.role, resume: ex.resume } : null}
-        jobs={jobs.map((j) => ({ id: j.id, title: j.title }))}
-      />
+      {session ? (
+        <BuilderLoader
+          signedIn
+          initial={initial}
+          example={ex ? { slug: ex.slug, role: ex.role, resume: ex.resume } : null}
+          jobs={jobs.map((j) => ({ id: j.id, title: j.title }))}
+        />
+      ) : (
+        <section className="pb-24">
+          <div className="mx-auto max-w-md px-4 sm:px-6">
+            <div className="rounded-[2rem] border-2 border-ink bg-white p-6 shadow-[8px_8px_0_var(--color-ink)] sm:p-8">
+              <h2 className="font-display text-2xl font-bold">Sign in to start your resume</h2>
+              <p className="mb-5 mt-1 text-sm text-muted">No password needed — we&apos;ll email you a code. Your resume is saved to your account.</p>
+              <SignInPanel />
+            </div>
+          </div>
+        </section>
+      )}
       <ResumeExamples />
     </>
   );
